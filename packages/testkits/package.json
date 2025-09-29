@@ -1,0 +1,14 @@
+{
+  "name": "testkits",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Shared synthetic data generation test kits",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.4",
+    "typescript": "^5.9.2"
+  }
+}

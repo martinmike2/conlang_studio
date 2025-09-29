@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.17.1
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+      - name: Lint
+        run: pnpm lint
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Tests
+        run: pnpm test
+      - name: Migration Dry Run
+        run: pnpm exec tsx scripts/migrations-dry-run.ts
+      - name: Exit Validation
+        run: pnpm exec tsx scripts/exit-validation.ts
+      - name: Synthetic Sample
+        run: pnpm exec tsx scripts/generate-synth.ts --phonemes 3 --lexemes 2 | tee synth-sample.json
+      - name: Upload Synthetic Sample
+        uses: actions/upload-artifact@v4
+        with:
+          name: synth-sample
+          path: synth-sample.json
