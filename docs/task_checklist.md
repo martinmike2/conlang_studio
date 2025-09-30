@@ -44,14 +44,14 @@ Legend: [ ] Todo | [~] In Progress | [x] Done | [!] Blocked
 [x] FrameBuilder UI (MVP)
 [x] Sense network UI (MVP)
 [x] Sense network data adaptor (graph extraction)
-[ ] Validator: orphan sense detection
-[ ] Validator: incomplete role filling in sample generations
+[x] Validator: orphan sense detection
+[x] Validator: incomplete role filling in sample generations
 ### Non-Concatenative Morphology
 [x] Migrations: roots, patterns, root_pattern_bindings, reduplication_templates, ablaut_schemes
-[ ] Root & pattern CRUD services
-[ ] Pattern legality validator (slot vs skeleton length)
-[ ] Binding generator (initial synchronous version)
-[ ] Cache invalidation map (root, pattern, binding)
+[x] Root & pattern CRUD services
+[x] Pattern legality validator (slot vs skeleton length)
+[x] Binding generator (initial synchronous version)
+[x] Cache invalidation map (root, pattern, binding)
 [ ] RootPatternBuilder UI (MVP)
 [ ] Reduplication template specification (v1 constraints)
 [ ] Ablaut scheme registry
@@ -206,6 +206,10 @@ Legend: [ ] Todo | [~] In Progress | [x] Done | [!] Blocked
 [ ] Skeleton loaders for list panels
 [ ] Toggle to widen activity panel
 [ ] Hotkey reference popover
+
+### Sense Network Enhancements
+[ ] Relation-aware color palette for graph edges and nodes
+[ ] Node pinning / focus mode in graph view
 
 ---
 ## Cross-Cutting Continuous Tasks
