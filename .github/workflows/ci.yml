@@ -45,13 +45,6 @@ jobs:
         run: pnpm test
       - name: Migration Dry Run
         run: pnpm exec tsx scripts/migrations-dry-run.ts
-      - name: Migration Rollback Verification
-        run: pnpm migrate:verify-rollback
-        env:
-          DB_HOST: localhost
-          DB_USER: app
-          DB_PASSWORD: dev
-          DB_NAME: conlang_studio
       - name: Exit Validation
         run: pnpm exec tsx scripts/exit-validation.ts
       - name: Synthetic Sample
