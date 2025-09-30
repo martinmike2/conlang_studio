@@ -1,41 +1,16 @@
 import { describe, it, expect, afterEach } from "vitest"
-import { PGlite } from "@electric-sql/pglite"
-import { readFileSync } from "node:fs"
-import { resolve } from "node:path"
-import { drizzle } from "drizzle-orm/pglite"
-
-import * as schema from "../../db/schema/core"
-import {
-  createSemanticsService,
-  subscribeSemanticsEvents,
-  clearSemanticsEventSubscribers,
-  type SemanticEventWithTimestamp
-} from "@core/semantics"
-
-const migrationFile = resolve(__dirname, "../../db/migrations/0000_absurd_stranger.sql")
-
-async function createInMemoryService() {
-  const client = new PGlite()
-  const sql = readFileSync(migrationFile, "utf8")
-  await client.exec(sql)
-
-  const db = drizzle(client, { schema })
-  const service = createSemanticsService(db as any)
-  return {
-    service,
-    async dispose() {
-      await client.close()
-    }
-  }
-}
+import { subscribeSemanticsEvents, clearSemanticsEventSubscribers, type SemanticEventWithTimestamp } from "@core/semantics"
+import { clearActivitySubscribers, listActivity } from "@core/activity"
+import { createSemanticsTestHarness } from "./utils/semanticsTestUtils"
 
 describe("SemanticsService", () => {
   afterEach(() => {
     clearSemanticsEventSubscribers()
+    clearActivitySubscribers()
   })
 
   it("supports frame, sense, and idiom CRUD", async () => {
-    const { service, dispose } = await createInMemoryService()
+  const { service, db, dispose } = await createSemanticsTestHarness()
     const events: SemanticEventWithTimestamp[] = []
     const unsubscribe = subscribeSemanticsEvents((event) => {
       events.push(event)
@@ -45,17 +20,39 @@ describe("SemanticsService", () => {
       name: "Harvesting",
       slug: "harvesting",
       domain: "agriculture",
-      description: "Harvest-related frames"
+      description: "Harvest-related frames",
+      roles: [
+        { name: "AGENT", cardinality: "1" },
+        { name: "PATIENT", cardinality: "1" }
+      ]
     })
 
     expect(frame.id).toBeGreaterThan(0)
+    expect(frame.roles).toEqual([
+      { name: "AGENT", cardinality: "1", order: 0 },
+      { name: "PATIENT", cardinality: "1", order: 1 }
+    ])
 
     const listed = await service.listFrames()
     expect(listed).toHaveLength(1)
     expect(listed[0].slug).toBe("harvesting")
+    expect(listed[0].roles).toEqual([
+      { name: "AGENT", cardinality: "1", order: 0 },
+      { name: "PATIENT", cardinality: "1", order: 1 }
+    ])
 
-    const updatedFrame = await service.updateFrame(frame.id, { description: "Reaping and threshing" })
+    const updatedFrame = await service.updateFrame(frame.id, {
+      description: "Reaping and threshing",
+      roles: [
+        { name: "AGENT", cardinality: "1" },
+        { name: "TOOL", cardinality: "0..n" }
+      ]
+    })
     expect(updatedFrame?.description).toBe("Reaping and threshing")
+    expect(updatedFrame?.roles).toEqual([
+      { name: "AGENT", cardinality: "1", order: 0 },
+      { name: "TOOL", cardinality: "0..n", order: 1 }
+    ])
 
     const sense = await service.createSense({
       frameId: frame.id,
@@ -98,8 +95,6 @@ describe("SemanticsService", () => {
 
     unsubscribe()
 
-    await dispose()
-
     expect(events).toHaveLength(9)
     expect(events.map(({ entity, action }) => `${entity}:${action}`)).toEqual([
       "frame:created",
@@ -115,5 +110,14 @@ describe("SemanticsService", () => {
     expect(events[0].data).toMatchObject({ name: "Harvesting" })
     expect(events[2].data).toMatchObject({ gloss: "to reap" })
     expect(events[4].data).toMatchObject({ textValue: "bring in the sheaves" })
+
+    const activity = await listActivity({ limit: 20 }, db as any)
+    expect(activity.entries).toHaveLength(9)
+    expect(activity.entries.map(({ entity, action }) => `${entity}:${action}`)).toEqual(
+      [...events.map(({ entity, action }) => `${entity}:${action}`)].reverse()
+    )
+    expect(activity.entries[0].summary).toContain("Frame “Harvesting” deleted")
+
+    await dispose()
   })
 })

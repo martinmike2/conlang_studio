@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, integer } from "drizzle-orm/pg-core"
+import { pgTable, serial, text, timestamp, integer, jsonb } from "drizzle-orm/pg-core"
 
 export const languages = pgTable("languages", {
     id: serial("id").primaryKey(),
@@ -14,6 +14,7 @@ export const semanticFrames = pgTable("semantic_frames", {
     slug: text("slug").notNull().unique(),
     domain: text("domain"),
     description: text("description"),
+    roles: jsonb("roles").notNull().$type<Array<{ name: string; cardinality: string; order: number }>>(),
     createdAt: timestamp("created_at").defaultNow().notNull()
 })
 
@@ -39,6 +40,20 @@ export const idioms = pgTable("idioms", {
     textValue: text("text").notNull(),
     notes: text("notes"),
     createdAt: timestamp("created_at").defaultNow().notNull()
+})
+
+export const activityLog = pgTable("activity_log", {
+    id: serial("id").primaryKey(),
+    occurredAt: timestamp("occurred_at", { withTimezone: true }).defaultNow().notNull(),
+    scope: text("scope").notNull(),
+    entity: text("entity"),
+    action: text("action").notNull(),
+    summary: text("summary").notNull(),
+    actor: text("actor"),
+    frameId: integer("frame_id").references(() => semanticFrames.id, { onDelete: 'set null' }),
+    senseId: integer("sense_id").references(() => lexemeSenses.id, { onDelete: 'set null' }),
+    idiomId: integer("idiom_id").references(() => idioms.id, { onDelete: 'set null' }),
+    payload: jsonb("payload").notNull().$type<Record<string, unknown>>().default({})
 })
 
 export const classifierSystems = pgTable("classifier_systems", {

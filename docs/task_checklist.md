@@ -41,8 +41,9 @@ Legend: [ ] Todo | [~] In Progress | [x] Done | [!] Blocked
 [x] Migrations: semantic_frames, lexeme_senses, sense_relations, idioms, classifier_systems
 [x] CRUD services (frames, senses, idioms)
 [x] Event emission (CREATE/UPDATE/DELETE)
-[ ] FrameBuilder UI (MVP)
-[ ] Sense network data adaptor (graph extraction)
+[x] FrameBuilder UI (MVP)
+[x] Sense network UI (MVP)
+[x] Sense network data adaptor (graph extraction)
 [ ] Validator: orphan sense detection
 [ ] Validator: incomplete role filling in sample generations
 ### Non-Concatenative Morphology
@@ -186,6 +187,25 @@ Legend: [ ] Todo | [~] In Progress | [x] Done | [!] Blocked
 ### Exit Validation
 [ ] All SLOs green or accepted
 [ ] Replay gate green 5 consecutive runs
+
+---
+## Phase 999: Optional Improvements
+### FrameBuilder Enhancements
+[ ] Scope-aware activity feed (frame-specific filtering)
+[ ] Auto-select newly created frame in builder
+[ ] Unsaved changes indicator
+[ ] Keyboard shortcuts (save, new frame, navigation)
+
+### Activity & Context Extras
+[ ] Inline role validation with duplicate hints
+[ ] Enhanced empty states with guided CTAs
+[ ] Frame list search and domain filter
+[ ] Related senses preview in sidebar
+
+### Quality-of-Life
+[ ] Skeleton loaders for list panels
+[ ] Toggle to widen activity panel
+[ ] Hotkey reference popover
 
 ---
 ## Cross-Cutting Continuous Tasks

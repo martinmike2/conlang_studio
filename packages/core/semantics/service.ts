@@ -2,7 +2,9 @@ import { eq, type InferInsertModel } from "drizzle-orm"
 import { getDb } from "../../db/client"
 import { semanticFrames, lexemeSenses, idioms } from "../../db/schema/core"
 import type { SemanticFrameRecord, LexemeSenseRecord, IdiomRecord } from "./types"
-import { emitSemanticsEvent } from "./events"
+import { emitSemanticsEvent, type SemanticEventAction, type SemanticEntity, type SemanticEventPayloadMap } from "./events"
+import { normalizeFrameRoles, type FrameRoleInput, type FrameRole } from "./roles"
+import { recordActivity } from "@core/activity"
 
 type DbClient = ReturnType<typeof getDb>
 
@@ -19,6 +21,7 @@ export interface CreateFrameInput {
 	slug: string
 	domain?: string | null
 	description?: string | null
+	roles?: FrameRoleInput[]
 }
 
 export type UpdateFrameInput = Partial<CreateFrameInput>
@@ -61,6 +64,68 @@ export interface SemanticsService {
 	deleteIdiom(id: number): Promise<boolean>
 }
 
+function sentenceCase(value: string) {
+	return value.charAt(0).toUpperCase() + value.slice(1)
+}
+
+function extractDisplayLabel<E extends SemanticEntity>(entity: E, data: SemanticEventPayloadMap[E]): string {
+	if (entity === "frame") {
+		const frame = data as SemanticEventPayloadMap["frame"]
+		return frame.name ?? `#${frame.id}`
+	}
+	if (entity === "sense") {
+		const sense = data as SemanticEventPayloadMap["sense"]
+		return sense.gloss ?? `#${sense.id}`
+	}
+	if (entity === "idiom") {
+		const idiom = data as SemanticEventPayloadMap["idiom"]
+		return idiom.textValue ?? `#${idiom.id}`
+	}
+	return `#${(data as { id: number }).id}`
+}
+
+function toPlainJson<T>(value: T): Record<string, unknown> {
+	return JSON.parse(JSON.stringify(value ?? {}))
+}
+
+async function logSemanticActivity<E extends SemanticEntity>(
+	entity: E,
+	action: SemanticEventAction,
+	data: SemanticEventPayloadMap[E],
+	db: DbClient
+) {
+	const label = extractDisplayLabel(entity, data)
+	const summary = `${sentenceCase(entity)} “${label}” ${action}`
+	const isDeletion = action === "deleted"
+	let frameId: number | null = null
+	let senseId: number | null = null
+	let idiomId: number | null = null
+
+	if (entity === "frame") {
+		const frame = data as SemanticEventPayloadMap["frame"]
+		frameId = isDeletion ? null : frame.id
+	} else if (entity === "sense") {
+		const sense = data as SemanticEventPayloadMap["sense"]
+		frameId = sense.frameId ?? null
+		senseId = isDeletion ? null : sense.id
+	} else if (entity === "idiom") {
+		const idiom = data as SemanticEventPayloadMap["idiom"]
+		frameId = idiom.frameId ?? null
+		idiomId = isDeletion ? null : idiom.id
+	}
+
+	await recordActivity({
+		scope: "semantics",
+		entity,
+		action,
+		summary,
+		frameId,
+		senseId,
+		idiomId,
+		payload: toPlainJson(data)
+	}, db)
+}
+
 function stripUndefined<T extends Record<string, unknown>>(value: T): Partial<T> {
 	return Object.fromEntries(
 		Object.entries(value).filter(([, v]) => v !== undefined)
@@ -72,7 +137,8 @@ function prepareFrameInsert(input: CreateFrameInput): FrameInsert {
 		name: input.name,
 		slug: input.slug,
 		domain: input.domain ?? null,
-		description: input.description ?? null
+		description: input.description ?? null,
+		roles: normalizeFrameRoles(input.roles)
 	}
 }
 
@@ -106,6 +172,7 @@ export function createSemanticsService(db: DbClient = getDb()): SemanticsService
 		async createFrame(input: CreateFrameInput) {
 			const [created] = await db.insert(semanticFrames).values(prepareFrameInsert(input)).returning()
 			emitSemanticsEvent({ entity: "frame", action: "created", data: created })
+			await logSemanticActivity("frame", "created", created, db)
 			return created
 		},
 
@@ -115,7 +182,11 @@ export function createSemanticsService(db: DbClient = getDb()): SemanticsService
 				slug: patch.slug,
 				domain: patch.domain !== undefined ? patch.domain : undefined,
 				description: patch.description !== undefined ? patch.description : undefined
-			})
+			}) as Partial<FrameInsert>
+
+			if (patch.roles !== undefined) {
+				updates.roles = normalizeFrameRoles(patch.roles)
+			}
 
 			if (Object.keys(updates).length === 0) {
 				return service.getFrameById(id)
@@ -129,6 +200,7 @@ export function createSemanticsService(db: DbClient = getDb()): SemanticsService
 
 			if (updated) {
 				emitSemanticsEvent({ entity: "frame", action: "updated", data: updated })
+				await logSemanticActivity("frame", "updated", updated, db)
 			}
 			return updated ?? null
 		},
@@ -144,6 +216,7 @@ export function createSemanticsService(db: DbClient = getDb()): SemanticsService
 			}
 
 			emitSemanticsEvent({ entity: "frame", action: "deleted", data: deleted })
+			await logSemanticActivity("frame", "deleted", deleted, db)
 			return true
 		},
 
@@ -163,6 +236,7 @@ export function createSemanticsService(db: DbClient = getDb()): SemanticsService
 		async createSense(input: CreateSenseInput) {
 			const [created] = await db.insert(lexemeSenses).values(prepareSenseInsert(input)).returning()
 			emitSemanticsEvent({ entity: "sense", action: "created", data: created })
+			await logSemanticActivity("sense", "created", created, db)
 			return created
 		},
 
@@ -185,6 +259,7 @@ export function createSemanticsService(db: DbClient = getDb()): SemanticsService
 
 			if (updated) {
 				emitSemanticsEvent({ entity: "sense", action: "updated", data: updated })
+				await logSemanticActivity("sense", "updated", updated, db)
 			}
 			return updated ?? null
 		},
@@ -200,6 +275,7 @@ export function createSemanticsService(db: DbClient = getDb()): SemanticsService
 			}
 
 			emitSemanticsEvent({ entity: "sense", action: "deleted", data: deleted })
+			await logSemanticActivity("sense", "deleted", deleted, db)
 			return true
 		},
 
@@ -219,6 +295,7 @@ export function createSemanticsService(db: DbClient = getDb()): SemanticsService
 		async createIdiom(input: CreateIdiomInput) {
 			const [created] = await db.insert(idioms).values(prepareIdiomInsert(input)).returning()
 			emitSemanticsEvent({ entity: "idiom", action: "created", data: created })
+			await logSemanticActivity("idiom", "created", created, db)
 			return created
 		},
 
@@ -241,6 +318,7 @@ export function createSemanticsService(db: DbClient = getDb()): SemanticsService
 
 			if (updated) {
 				emitSemanticsEvent({ entity: "idiom", action: "updated", data: updated })
+				await logSemanticActivity("idiom", "updated", updated, db)
 			}
 			return updated ?? null
 		},
@@ -256,6 +334,7 @@ export function createSemanticsService(db: DbClient = getDb()): SemanticsService
 			}
 
 			emitSemanticsEvent({ entity: "idiom", action: "deleted", data: deleted })
+			await logSemanticActivity("idiom", "deleted", deleted, db)
 			return true
 		}
 	}

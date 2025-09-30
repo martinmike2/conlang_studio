@@ -3,18 +3,18 @@ export interface Frame {
   name: string
   domain?: string
   description?: string
-  roles: { name: string; cardinality: string }[]
+  roles: { name: string; cardinality: string; order: number }[]
 }
 
 let frames: Frame[] = [
   { id: 'f1', name: 'TRANSFER_POSSESSION', domain: 'exchange', description: 'Giving / receiving events', roles: [
-    { name: 'AGENT', cardinality: '1' },
-    { name: 'RECIPIENT', cardinality: '1' },
-    { name: 'ITEM', cardinality: '1..n' }
+    { name: 'AGENT', cardinality: '1', order: 0 },
+    { name: 'RECIPIENT', cardinality: '1', order: 1 },
+    { name: 'ITEM', cardinality: '1..n', order: 2 }
   ]},
   { id: 'f2', name: 'EMISSION_SOUND', domain: 'perception', description: 'Producing a sound', roles: [
-    { name: 'SOURCE', cardinality: '1' },
-    { name: 'SOUND', cardinality: '1' }
+    { name: 'SOURCE', cardinality: '1', order: 0 },
+    { name: 'SOUND', cardinality: '1', order: 1 }
   ]}
 ]
 

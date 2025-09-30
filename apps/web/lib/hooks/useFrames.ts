@@ -1,13 +1,13 @@
 "use client"
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { slugify } from '../utils/slug'
+import { normalizeFrameRoles, type FrameRoleInput, type FrameRole } from '@core/semantics/roles'
+export type { FrameRoleInput, FrameRole } from '@core/semantics/roles'
 
 // Wrap global fetch to satisfy typecheck in environments where lib.dom types may be trimmed
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const _fetch = (...args: any[]) => (globalThis as any).fetch(...args)
-
-interface FrameRole { name: string; cardinality: string }
-interface Frame {
+export interface Frame {
   id: number
   name: string
   slug: string
@@ -21,9 +21,7 @@ interface CreateFrameInput {
   name: string
   domain?: string
   description?: string
-  // Accept roles for forward compatibility; currently ignored by API
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  roles?: any[]
+  roles?: FrameRoleInput[]
 }
 
 interface UpdateFrameInput {
@@ -31,47 +29,65 @@ interface UpdateFrameInput {
   name?: string
   domain?: string | null
   description?: string | null
+  roles?: FrameRoleInput[]
 }
 
 async function fetchFrames(): Promise<Frame[]> {
   const res = await _fetch('/api/frames', { cache: 'no-store' })
   if (!res.ok) throw new Error('Failed to load frames')
   const json = await res.json()
-  // API does not (yet) return roles; normalize with empty array
-  return (json.data as unknown as Array<Partial<Frame> & { roles?: FrameRole[] }>).map(f => ({
+  const raw = json.data as Array<Partial<Frame> & { roles?: FrameRoleInput[] }>
+  return raw.map((f) => ({
     id: f.id!,
     name: f.name!,
     slug: f.slug!,
     domain: f.domain ?? null,
     description: f.description ?? null,
     createdAt: f.createdAt!,
-    roles: f.roles ?? []
+    roles: normalizeFrameRoles(f.roles)
   })) as Frame[]
 }
 
 async function createFrame(input: CreateFrameInput) {
-  const { name, domain, description } = input
+  const { name, domain, description, roles } = input
+  const payload = {
+    name,
+    domain,
+    description,
+    roles: normalizeFrameRoles(roles)
+  }
   const res = await _fetch('/api/frames', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ name, domain, description })
+    body: JSON.stringify(payload)
   })
   if (!res.ok) throw new Error(await res.text())
   const json = await res.json()
   const f = json.data
-  return { ...f, roles: f.roles ?? [] } as Frame
+  return {
+    ...f,
+    roles: normalizeFrameRoles(f.roles as FrameRoleInput[] | undefined)
+  } as Frame
 }
 
 async function updateFrame(input: UpdateFrameInput) {
   const { id, ...rest } = input
+  const payload = {
+    ...rest,
+  roles: normalizeFrameRoles(rest.roles)
+  }
   const res = await _fetch(`/api/frames?id=${id}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(rest)
+    body: JSON.stringify(payload)
   })
   if (!res.ok) throw new Error(await res.text())
   const json = await res.json()
-  return json.data as Frame
+  const f = json.data as Frame
+  return {
+    ...f,
+    roles: normalizeFrameRoles(f.roles as FrameRoleInput[] | undefined)
+  }
 }
 
 async function deleteFrame(id: number) {
@@ -95,7 +111,7 @@ export function useFrames() {
         domain: input.domain ?? null,
         description: input.description ?? null,
         createdAt: new Date().toISOString(),
-        roles: []
+        roles: normalizeFrameRoles(input.roles)
       }
       qc.setQueryData<Frame[]>(['frames'], (old = []) => [temp, ...old])
       return { previous }
@@ -110,7 +126,16 @@ export function useFrames() {
     onMutate: async (input) => {
       await qc.cancelQueries({ queryKey: ['frames'] })
       const previous = qc.getQueryData<Frame[]>(['frames'])
-      qc.setQueryData<Frame[]>(['frames'], (old = []) => old.map(f => f.id === input.id ? { ...f, ...input, slug: input.name ? slugify(input.name) : f.slug } : f))
+      qc.setQueryData<Frame[]>(['frames'], (old = []) => old.map(f => {
+        if (f.id !== input.id) return f
+  const nextRoles = input.roles === undefined ? f.roles : normalizeFrameRoles(input.roles)
+        return {
+          ...f,
+          ...input,
+          slug: input.name ? slugify(input.name) : f.slug,
+          roles: nextRoles
+        }
+      }))
       return { previous }
     },
     onError: (_e, _v, ctx) => { if (ctx?.previous) qc.setQueryData(['frames'], ctx.previous) },
