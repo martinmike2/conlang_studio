@@ -8,6 +8,8 @@
     "test:watch": "vitest"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.2.8",
+    "drizzle-orm": "^0.44.5",
     "vitest": "^3.2.4",
     "typescript": "^5.9.2"
   }

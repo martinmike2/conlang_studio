@@ -4,9 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "generate": "drizzle-kit generate:pg",
-    "push": "drizzle-kit push:pg",
-    "status": "drizzle-kit status"
+    "generate": "drizzle-kit generate",
+    "push": "drizzle-kit push",
+    "status": "drizzle-kit status",
+    "migrate": "drizzle-kit migrate",
+    "check": "drizzle-kit check",
+    "ping": "tsx scripts/db-ping.ts",
+    "bootstrap": "tsx scripts/manual-bootstrap.ts"
   },
   "keywords": [],
   "author": "",
@@ -18,6 +22,8 @@
   },
   "devDependencies": {
     "drizzle-kit": "^0.31.5",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "@types/pg": "^8.11.10",
+    "dotenv": "^16.4.5"
   }
 }

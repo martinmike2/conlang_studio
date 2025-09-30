@@ -5,7 +5,7 @@ Source: Derived from implementation_plan.md and architecture.md
 Legend: [ ] Todo | [~] In Progress | [x] Done | [!] Blocked
 
 ## Phase Overview
-[ ] Phase 0: Bootstrap & Instrumentation
+[x] Phase 0: Bootstrap & Instrumentation
 [ ] Phase 1: Semantics + Non-Concatenative Foundations + Validation Extensions
 [ ] Phase 2: Sociolinguistics, Borrowing, Initial Metrics
 [ ] Phase 3: Diachrony Evolution + Metrics Expansion
@@ -31,22 +31,22 @@ Legend: [ ] Todo | [~] In Progress | [x] Done | [!] Blocked
 ### Synthetic Dataset Generator
 [x] Baseline skeleton script
 ### Exit Validation
-[ ] CI green on clean clone
+[x] CI green on clean clone
 [x] Health endpoint accessible
-[ ] Migration run + rollback test passes
+[x] Migration run + rollback test passes
 
 ---
 ## Phase 1: Semantics + Non-Concatenative + Validation Extensions
 ### Semantics Core
-[ ] Migrations: semantic_frames, lexeme_senses, sense_relations, idioms, classifier_systems
-[ ] CRUD services (frames, senses, idioms)
-[ ] Event emission (CREATE/UPDATE/DELETE)
+[x] Migrations: semantic_frames, lexeme_senses, sense_relations, idioms, classifier_systems
+[x] CRUD services (frames, senses, idioms)
+[x] Event emission (CREATE/UPDATE/DELETE)
 [ ] FrameBuilder UI (MVP)
 [ ] Sense network data adaptor (graph extraction)
 [ ] Validator: orphan sense detection
 [ ] Validator: incomplete role filling in sample generations
 ### Non-Concatenative Morphology
-[ ] Migrations: roots, patterns, root_pattern_bindings, reduplication_templates, ablaut_schemes
+[x] Migrations: roots, patterns, root_pattern_bindings, reduplication_templates, ablaut_schemes
 [ ] Root & pattern CRUD services
 [ ] Pattern legality validator (slot vs skeleton length)
 [ ] Binding generator (initial synchronous version)

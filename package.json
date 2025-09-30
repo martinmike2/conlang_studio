@@ -10,11 +10,14 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
-    "migrate:generate": "pnpm -F db drizzle-kit generate:pg",
-    "migrate:push": "pnpm -F db drizzle-kit push:pg",
-    "migrate:status": "pnpm -F db drizzle-kit status"
+    "migrate:generate": "pnpm -F db run generate",
+    "migrate:push": "pnpm -F db run push",
+    "migrate:migrate": "pnpm -F db run migrate",
+    "migrate:check": "pnpm -F db run check",
+    "migrate:verify-rollback": "pnpm -F db exec tsx scripts/migrations-run-rollback.ts"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.36.0",
     "@types/node": "^24.6.0",
     "@typescript-eslint/eslint-plugin": "^8.45.0",
@@ -29,7 +32,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "pino": "^9.12.0"
+    "dotenv": "^16.4.5",
+    "pino": "^9.12.0",
+    "zod": "^3.23.8"
   },
   "packageManager": "pnpm@10.17.1"
 }
