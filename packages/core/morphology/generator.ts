@@ -1,5 +1,3 @@
-import type { RootRecord, PatternRecord } from "./types"
-
 export interface BindingGeneratorOptions {
   stemFormatter?: (segments: string[]) => string
 }
@@ -15,6 +13,21 @@ export interface GeneratedBinding {
   surfaceForm: string
   segments: string[]
   definitions: GeneratedStemDefinition[]
+}
+
+export interface BindingRootInput {
+  id: number
+  representation: string
+  gloss?: string | null
+  createdAt?: Date
+}
+
+export interface BindingPatternInput {
+  id: number
+  skeleton: string
+  slotCount?: number
+  name?: string | null
+  createdAt?: Date
 }
 
 const DEFAULT_VOWEL = "a"
@@ -48,7 +61,7 @@ function isConsonantPlaceholder(token: string): boolean {
   return /^[A-Z](?:\d+)?$/.test(token)
 }
 
-function extractRootSegments(root: RootRecord): string[] {
+function extractRootSegments(root: BindingRootInput): string[] {
   const normalized = root.representation.replace(/[^A-Za-z]/g, "").toLowerCase()
   return normalized.split("")
 }
@@ -74,8 +87,8 @@ function resolvePlaceholder(
 }
 
 export function generateBinding(
-  root: RootRecord,
-  pattern: PatternRecord,
+  root: BindingRootInput,
+  pattern: BindingPatternInput,
   options: BindingGeneratorOptions = {}
 ): GeneratedBinding {
   const rootSegments = extractRootSegments(root)

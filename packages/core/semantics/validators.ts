@@ -133,14 +133,7 @@ export interface RoleFillValidatorResult {
 export async function validateIncompleteRoleFilling(
   db: DbClient = getDb()
 ): Promise<RoleFillValidatorResult> {
-  const frames = await db
-    .select({
-      id: semanticFrames.id,
-      name: semanticFrames.name,
-      slug: semanticFrames.slug,
-      roles: semanticFrames.roles as unknown as StoredFrameRoles
-    })
-    .from(semanticFrames)
+  const frames = await db.select().from(semanticFrames)
 
   const relationRows = await db
     .select({
@@ -163,7 +156,7 @@ export async function validateIncompleteRoleFilling(
   let framesWithRequirements = 0
 
   for (const frame of frames) {
-    const roles = coerceRoles(frame.roles)
+    const roles = coerceRoles(frame.roles as StoredFrameRoles)
     const requiredRoles = roles.filter(isRoleRequired)
 
     if (requiredRoles.length === 0) continue

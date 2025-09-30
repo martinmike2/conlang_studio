@@ -52,7 +52,7 @@ Legend: [ ] Todo | [~] In Progress | [x] Done | [!] Blocked
 [x] Pattern legality validator (slot vs skeleton length)
 [x] Binding generator (initial synchronous version)
 [x] Cache invalidation map (root, pattern, binding)
-[ ] RootPatternBuilder UI (MVP)
+[x] RootPatternBuilder UI (MVP)
 [ ] Reduplication template specification (v1 constraints)
 [ ] Ablaut scheme registry
 ### Validation Extensions

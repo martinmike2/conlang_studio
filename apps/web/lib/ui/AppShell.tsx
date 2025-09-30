@@ -40,6 +40,7 @@ const navSections: { label: string; items: { label: string; href: string }[] }[]
     label: 'Morphology',
     items: [
       { label: 'Roots', href: '/morphology/roots' },
+      { label: 'Root Pattern Builder', href: '/morphology/builder' },
       { label: 'Patterns', href: '/morphology/patterns' },
       { label: 'Bindings', href: '/morphology/bindings' },
     ],
