@@ -150,3 +150,33 @@ export const rootPatternRequirements = pgTable("root_pattern_requirements", {
 }, (table) => ({
     pk: { columns: [table.rootId, table.patternSetId], name: "root_pattern_requirements_pk" }
 }))
+
+// Phase 2 Metrics scaffolding (early)
+export const usageStats = pgTable("usage_stats", {
+    id: serial("id").primaryKey(),
+    languageId: integer("language_id").notNull(),
+    targetKind: text("target_kind").notNull(),
+    targetId: integer("target_id"),
+    freq: integer("freq").notNull().default(0),
+    windowStart: timestamp("window_start"),
+    windowEnd: timestamp("window_end"),
+    createdAt: timestamp("created_at").defaultNow().notNull()
+})
+
+export const complexitySnapshots = pgTable("complexity_snapshots", {
+    id: serial("id").primaryKey(),
+    languageId: integer("language_id").notNull(),
+    versionRef: text("version_ref"),
+    metrics: jsonb("metrics").notNull().$type<Record<string, unknown>>(),
+    createdAt: timestamp("created_at").defaultNow().notNull()
+})
+
+export const metricsJobs = pgTable("metrics_jobs", {
+    id: serial("id").primaryKey(),
+    languageId: integer("language_id").notNull(),
+    status: text("status").notNull(),
+    startedAt: timestamp("started_at"),
+    finishedAt: timestamp("finished_at"),
+    payload: jsonb("payload").notNull().$type<Record<string, unknown>>().default({}),
+    createdAt: timestamp("created_at").defaultNow().notNull()
+})

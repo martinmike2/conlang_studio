@@ -75,6 +75,9 @@ export function AppShell({ children }: AppShellProps) {
       </Toolbar>
       <Divider />
       <List sx={{ flex: 1, py: 0 }}>
+        <ListItemButton component={Link} href="/wizard" selected={pathname === '/wizard'}>
+          <ListItemText primary="Wizard" />
+        </ListItemButton>
         <ListItemButton component={Link} href="/dashboard" selected={pathname === '/dashboard'}>
           <ListItemText primary="Dashboard" />
         </ListItemButton>

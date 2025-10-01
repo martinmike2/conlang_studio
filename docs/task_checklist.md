@@ -59,12 +59,14 @@ Legend: [ ] Todo | [~] In Progress | [x] Done | [!] Blocked
 [x] Tone association integrity validator
 [x] Orthography round-trip validator
 [x] Pattern completeness validator (required pattern sets)
-[ ] Integrate all new validators into QA panel
+[x] Integrate all new validators into QA panel
 ### Metrics Scaffolding (Early)
-[ ] Metrics snapshot schema (skeleton)
-[ ] Cluster complexity draft function
+[x] Metrics snapshot schema (skeleton)
+[x] Cluster complexity draft function
 ### Wizard Update
-[ ] Insert Semantics step (placeholder)
+[x] Insert Semantics step (placeholder)
+
+Notes: Added a lightweight wizard UI and route; files added: `apps/web/lib/ui/WizardStepper.tsx`, `apps/web/app/wizard/page.tsx`. Nav link added in `AppShell.tsx`.
 ### Testing
 [ ] Property tests: pattern legality, role coverage
 [ ] Replay determinism test (250+ semantic/pattern events)

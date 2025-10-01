@@ -55,7 +55,14 @@ async function main() {
     const { table_schema } = mz.rows[0]
     console.log('[check-migrations] __drizzle_migrations found in schema:', table_schema)
     try {
-      const ms = await client.query(`SELECT id, name, checksum, created_at FROM ${table_schema}.__drizzle_migrations ORDER BY created_at DESC LIMIT 20`)
+      // discover available columns
+      const cols = await client.query(
+        `SELECT column_name FROM information_schema.columns WHERE table_schema = $1 AND table_name = '__drizzle_migrations' ORDER BY ordinal_position`,
+        [table_schema]
+      )
+      const colNames = cols.rows.map((r: any) => r.column_name)
+      const selectCols = colNames.length ? colNames.join(', ') : '*'
+      const ms = await client.query(`SELECT ${selectCols} FROM ${table_schema}.__drizzle_migrations ORDER BY created_at DESC LIMIT 20`)
       console.log('[check-migrations] Recent migration records:')
       console.table(ms.rows)
     } catch (e) {
