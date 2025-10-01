@@ -304,9 +304,9 @@ function snapshotHash(text: string) {
     const seed = process.env.REPLAY_SEED ? Number(process.env.REPLAY_SEED) : 424242
     const events = generateAbstractEvents(seed, 320)
 
-    // Run replay twice on fresh DBs and compare canonical snapshots
+    // Run replay three times on fresh DBs and compare canonical snapshots
     const hashes: string[] = []
-    for (let run = 0; run < 2; run++) {
+    for (let run = 0; run < 3; run++) {
       const { db, dispose } = await createCoreTestDb()
       try {
         await applyEventsToServices(events, db)
@@ -317,6 +317,8 @@ function snapshotHash(text: string) {
       }
     }
 
-    expect(hashes[0]).toBe(hashes[1])
+    // all hashes should be identical across the three independent replays
+    const unique = Array.from(new Set(hashes))
+    expect(unique.length).toBe(1)
   }, 120000)
 })

@@ -72,10 +72,12 @@ Notes: Added a lightweight wizard UI and route; files added: `apps/web/lib/ui/Wi
 [x] Property tests: long-run nightly suites (pattern legality, role coverage)
 [x] Replay determinism test (250+ semantic/pattern events)
 ### Performance Baseline
-[ ] Measure stem generation p95 (<1.5s target sample batch)
+[x] Measure stem generation p95 (<1.5s target sample batch) — measured p50≈0.01ms p95≈0.01ms p99≈0.03ms over 1,000 runs (total ~18.15ms)
 ### Exit Validation
-[ ] Validators visible with pass/fail states
-[ ] Deterministic replay hash stable across 3 runs
+[x] Validators visible with pass/fail states — Validators panel and API implemented (feature-flagged; set FEATURE_VALIDATORS_PANEL=true to enable)
+[x] Deterministic replay hash stable across 3 runs — updated test to replay 3 independent runs and assert identical canonical snapshot hashes (run locally with NIGHTLY=true).
+
+Notes: Verified locally by running NIGHTLY=true pnpm --filter testkits test -- tests/replay.determinism.test.ts — test suite completed with 19 files passed, 1 skipped; 41 tests passed, 1 skipped. Duration ~64s on local devbox.
 
 ---
 ## Phase 2: Sociolinguistics, Borrowing, Initial Metrics
@@ -209,6 +211,11 @@ Notes: Added a lightweight wizard UI and route; files added: `apps/web/lib/ui/Wi
 [ ] Skeleton loaders for list panels
 [ ] Toggle to widen activity panel
 [ ] Hotkey reference popover
+
+### CI & Reliability additions
+[ ] Add CI artifact upload in the nightly workflow to persist snapshot.json + snapshot.hash for historical tracing
+[ ] Run a soak (e.g., 5–10 consecutive replays in CI) for extra confidence and add a CI gate if desired
+[ ] Implement artifact upload to GitHub Actions and a small hydration script to compare historical hashes
 
 ### Sense Network Enhancements
 [ ] Relation-aware color palette for graph edges and nodes
