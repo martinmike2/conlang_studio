@@ -68,8 +68,9 @@ Legend: [ ] Todo | [~] In Progress | [x] Done | [!] Blocked
 
 Notes: Added a lightweight wizard UI and route; files added: `apps/web/lib/ui/WizardStepper.tsx`, `apps/web/app/wizard/page.tsx`. Nav link added in `AppShell.tsx`.
 ### Testing
-[ ] Property tests: pattern legality, role coverage
-[ ] Replay determinism test (250+ semantic/pattern events)
+[x] Property tests: short-run smoke variants (pattern legality, role coverage)
+[x] Property tests: long-run nightly suites (pattern legality, role coverage)
+[x] Replay determinism test (250+ semantic/pattern events)
 ### Performance Baseline
 [ ] Measure stem generation p95 (<1.5s target sample batch)
 ### Exit Validation
