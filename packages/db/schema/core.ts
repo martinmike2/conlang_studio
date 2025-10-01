@@ -100,3 +100,53 @@ export const ablautSchemes = pgTable("ablaut_schemes", {
     description: text("description"),
     createdAt: timestamp("created_at").defaultNow().notNull()
 })
+
+export const toneTargets = pgTable("tone_targets", {
+    id: serial("id").primaryKey(),
+    lexemeId: integer("lexeme_id"),
+    slotIndex: integer("slot_index").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull()
+})
+
+export const toneAssociations = pgTable("tone_associations", {
+    id: serial("id").primaryKey(),
+    targetId: integer("target_id").notNull().references(() => toneTargets.id, { onDelete: 'cascade' }),
+    tone: text("tone").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull()
+})
+
+export const orthographies = pgTable("orthographies", {
+    id: serial("id").primaryKey(),
+    name: text("name").notNull(),
+    graphemeMap: jsonb("grapheme_map").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull()
+})
+
+export const orthographySamples = pgTable("orthography_samples", {
+    id: serial("id").primaryKey(),
+    orthographyId: integer("orthography_id").notNull().references(() => orthographies.id, { onDelete: 'cascade' }),
+    surface: text("surface").notNull(),
+    transliteration: text("transliteration").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull()
+})
+
+export const patternSets = pgTable("pattern_sets", {
+    id: serial("id").primaryKey(),
+    name: text("name").notNull(),
+    description: text("description"),
+    createdAt: timestamp("created_at").defaultNow().notNull()
+})
+
+export const patternSetMembers = pgTable("pattern_set_members", {
+    patternSetId: integer("pattern_set_id").notNull().references(() => patternSets.id, { onDelete: 'cascade' }),
+    patternId: integer("pattern_id").notNull().references(() => patterns.id, { onDelete: 'cascade' })
+}, (table) => ({
+    pk: { columns: [table.patternSetId, table.patternId], name: "pattern_set_members_pk" }
+}))
+
+export const rootPatternRequirements = pgTable("root_pattern_requirements", {
+    rootId: integer("root_id").notNull().references(() => roots.id, { onDelete: 'cascade' }),
+    patternSetId: integer("pattern_set_id").notNull().references(() => patternSets.id, { onDelete: 'cascade' })
+}, (table) => ({
+    pk: { columns: [table.rootId, table.patternSetId], name: "root_pattern_requirements_pk" }
+}))

@@ -53,12 +53,12 @@ Legend: [ ] Todo | [~] In Progress | [x] Done | [!] Blocked
 [x] Binding generator (initial synchronous version)
 [x] Cache invalidation map (root, pattern, binding)
 [x] RootPatternBuilder UI (MVP)
-[ ] Reduplication template specification (v1 constraints)
-[ ] Ablaut scheme registry
+[x] Reduplication template specification (v1 constraints)
+[x] Ablaut scheme registry
 ### Validation Extensions
-[ ] Tone association integrity validator
-[ ] Orthography round-trip validator
-[ ] Pattern completeness validator (required pattern sets)
+[x] Tone association integrity validator
+[x] Orthography round-trip validator
+[x] Pattern completeness validator (required pattern sets)
 [ ] Integrate all new validators into QA panel
 ### Metrics Scaffolding (Early)
 [ ] Metrics snapshot schema (skeleton)
