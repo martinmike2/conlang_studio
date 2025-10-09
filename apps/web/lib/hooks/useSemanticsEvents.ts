@@ -6,8 +6,8 @@ export interface SemanticsEvent {
   entity: 'frame' | 'sense' | 'idiom'
   action: 'created' | 'updated' | 'deleted'
   timestamp: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: Record<string, any>
+  // event payload is untyped; treat as unknown and narrow at usage sites
+  data: unknown
 }
 
 interface UseSemanticsEventsOptions {
@@ -28,11 +28,14 @@ export function useSemanticsEvents(options: UseSemanticsEventsOptions = {}) {
 
     source.onmessage = (event) => {
       try {
-        const parsed: SemanticsEvent = JSON.parse(event.data)
-        setEvents((prev) => {
-          const next = [parsed, ...prev]
-          return next.slice(0, limit)
-        })
+        const parsedRaw = JSON.parse(event.data)
+        // Basic runtime validation: ensure required keys exist
+        if (parsedRaw && typeof parsedRaw === 'object') {
+          const asEvt = parsedRaw as SemanticsEvent
+          if (asEvt.entity && asEvt.action && asEvt.timestamp) {
+            setEvents((prev) => [asEvt, ...prev].slice(0, limit))
+          }
+        }
       } catch (err) {
         console.error('Failed to parse semantics event', err)
       }

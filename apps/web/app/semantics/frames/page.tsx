@@ -477,7 +477,7 @@ export default function FramesPage() {
             )}
 
             {(error || info) && (
-              <Alert severity={error ? 'error' : 'success'} onClose={() => { error ? setError(null) : setInfo(null) }}>
+              <Alert severity={error ? 'error' : 'success'} onClose={() => { if (error) setError(null); else setInfo(null) }}>
                 {error ?? info}
               </Alert>
             )}

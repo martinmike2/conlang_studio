@@ -2,26 +2,22 @@ import './globals.css'
 import * as React from 'react'
 import type { ReactNode } from 'react'
 import { AppShell } from '../lib/ui/AppShell'
-import { QueryProvider } from '../lib/providers/QueryProvider'
-import { ThemeModeProvider } from '../lib/providers/ThemeModeProvider'
-import { ConfirmationProvider } from '../lib/providers/ConfirmationProvider'
+import { ClientProviders } from '../lib/providers/ClientProviders'
+import { auth } from '../lib/auth/nextAuth'
 
 export const metadata = {
   title: 'Conlang Studio',
   description: 'Constructed language design workspace'
 }
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const session = await auth()
   return (
     <html lang="en">
       <body>
-        <ThemeModeProvider>
-          <QueryProvider>
-            <ConfirmationProvider>
-              <AppShell>{children}</AppShell>
-            </ConfirmationProvider>
-          </QueryProvider>
-        </ThemeModeProvider>
+        <ClientProviders session={session}>
+          <AppShell>{children}</AppShell>
+        </ClientProviders>
       </body>
     </html>
   )

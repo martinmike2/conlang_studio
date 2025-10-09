@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server"
+/// <reference types="node" />
 import { subscribeSemanticsEvents, type SemanticEventWithTimestamp } from "@core/semantics"
 
 export const runtime = "nodejs"
@@ -9,10 +9,10 @@ function formatEvent(data: SemanticEventWithTimestamp) {
 	return `data: ${JSON.stringify(data)}\n\n`
 }
 
-export async function GET(_req: NextRequest) {
+export async function GET() {
 	let unsubscribe: (() => void) | undefined
 	const keepAliveIntervalMs = 15000
-	let keepAlive: NodeJS.Timeout | undefined
+	let keepAlive: ReturnType<typeof setInterval> | undefined
 
 	const stream = new ReadableStream<Uint8Array>({
 		start(controller) {
@@ -29,9 +29,7 @@ export async function GET(_req: NextRequest) {
 		},
 		cancel() {
 			unsubscribe?.()
-			if (keepAlive) {
-				clearInterval(keepAlive)
-			}
+			if (keepAlive) clearInterval(keepAlive)
 		}
 	})
 

@@ -1,3 +1,14 @@
+Playwright E2E tests for VariantOverlayDiff.
+
+Run locally:
+
+1. Start Playwright (this will start web dev with OVERLAYS_DEV_FALLBACK=true):
+
+```bash
+pnpm --filter testkits run e2e
+```
+
+Note: tests rely on the in-memory overlays dev fallback. For a production-like run, start Postgres and migrations first.
 # Testkits — Property test notes
 
 This package contains test harnesses and property-style tests used for validating morphology and semantics validators.

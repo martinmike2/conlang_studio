@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import type { SenseNetworkResult } from '@core/semantics'
 
-const _fetch = (...args: any[]) => (globalThis as any).fetch(...args)
+const _fetch = (input: RequestInfo, init?: RequestInit) => (globalThis as unknown as typeof fetch)(input, init)
 
 export interface UseSenseNetworkOptions {
   frameId?: number | null

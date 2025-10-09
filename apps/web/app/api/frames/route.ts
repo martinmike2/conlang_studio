@@ -1,7 +1,6 @@
 import { NextRequest } from 'next/server'
 import { getDb, schema } from '../../../../../packages/db/client'
 import { z } from 'zod'
-import { sql } from 'drizzle-orm'
 import { parseJson, success, jsonError } from '../_util/respond'
 import { slugify } from '../../../lib/utils/slug'
 import { metrics } from '@core/metrics'

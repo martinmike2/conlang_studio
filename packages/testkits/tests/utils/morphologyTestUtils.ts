@@ -10,7 +10,16 @@ const migrationFiles = [
   resolve(__dirname, "../../../db/migrations/0000_absurd_stranger.sql"),
   resolve(__dirname, "../../../db/migrations/0001_frame_roles.sql"),
   resolve(__dirname, "../../../db/migrations/0002_activity_log.sql"),
-  resolve(__dirname, "../../../db/migrations/0003_validation_extensions.sql")
+  resolve(__dirname, "../../../db/migrations/0003_validation_extensions.sql"),
+  resolve(__dirname, "../../../db/migrations/0004_metrics_scaffolding.sql"),
+  resolve(__dirname, "../../../db/migrations/0005_borrowing_contact_events.sql"),
+  resolve(__dirname, "../../../db/migrations/0006_borrowing_loan_rulesets.sql"),
+  resolve(__dirname, "../../../db/migrations/0007_style_policies.sql"),
+  resolve(__dirname, "../../../db/migrations/0008_code_switch_profiles.sql"),
+  resolve(__dirname, "../../../db/migrations/0009_loan_flags.sql"),
+  resolve(__dirname, "../../../db/migrations/0010_variant_overlays.sql"),
+  resolve(__dirname, "../../../db/migrations/0011_variant_overlays_created_at_index.sql"),
+  resolve(__dirname, "../../../db/migrations/0012_variant_overlays_language_name_unique.sql")
 ]
 
 export async function createCoreTestDb() {
@@ -21,6 +30,9 @@ export async function createCoreTestDb() {
   }
 
   const db = drizzle(client, { schema })
+  // Ensure the returned db object exposes the schema tables as properties
+  // so callers that access (db as any).variantOverlays work in tests.
+  Object.assign(db as any, schema)
   return {
     db,
     async dispose() {

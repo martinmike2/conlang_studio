@@ -28,7 +28,7 @@ import SenseNetworkGraph from './SenseNetworkGraph'
 
 export default function SensesPage() {
   const { data: framesData, isLoading: framesLoading } = useFrames()
-  const frames = framesData ?? []
+  const frames = React.useMemo(() => framesData ?? [], [framesData])
 
   const [selectedFrame, setSelectedFrame] = React.useState<number | null>(null)
   const [selectedRelations, setSelectedRelations] = React.useState<string[]>([])
@@ -43,17 +43,14 @@ export default function SensesPage() {
     setRelationOptions((prev) => {
       const next = new Set(prev)
       for (const edge of network.edges) {
-        if (edge.relationType) {
-          next.add(edge.relationType)
-        }
+        if (edge.relationType) next.add(edge.relationType)
       }
-      const sorted = Array.from(next).sort()
-      return sorted
+      return Array.from(next).sort()
     })
   }, [network?.edges])
 
-  const allNodes = network?.nodes ?? []
-  const allEdges = network?.edges ?? []
+  const allNodes = React.useMemo(() => network?.nodes ?? [], [network?.nodes])
+  const allEdges = React.useMemo(() => network?.edges ?? [], [network?.edges])
 
   const filteredNodes = React.useMemo(() => {
     if (selectedFrame === null) return allNodes

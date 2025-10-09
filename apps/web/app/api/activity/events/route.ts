@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { NextRequest } from "next/server"
 import { subscribeActivity, type ActivityLogRecord } from "@core/activity"
 
@@ -13,11 +14,11 @@ function formatEvent(data: ActivityLogRecord) {
   return `data: ${JSON.stringify(payload)}\n\n`
 }
 
-export async function GET(req: NextRequest) {
+export async function GET(_req: NextRequest) {
   let unsubscribe: (() => void) | undefined
   const keepAliveIntervalMs = 15000
-  let keepAlive: NodeJS.Timeout | undefined
-  const scopeFilter = req.nextUrl.searchParams.get("scope") ?? null
+  let keepAlive: ReturnType<typeof setInterval> | undefined
+  const scopeFilter = _req.nextUrl.searchParams.get("scope") ?? null
 
   const stream = new ReadableStream<Uint8Array>({
     start(controller) {

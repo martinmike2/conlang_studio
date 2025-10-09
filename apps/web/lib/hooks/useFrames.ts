@@ -4,9 +4,13 @@ import { slugify } from '../utils/slug'
 import { normalizeFrameRoles, type FrameRoleInput, type FrameRole } from '@core/semantics/roles'
 export type { FrameRoleInput, FrameRole } from '@core/semantics/roles'
 
-// Wrap global fetch to satisfy typecheck in environments where lib.dom types may be trimmed
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const _fetch = (...args: any[]) => (globalThis as any).fetch(...args)
+type FetchFn = typeof fetch
+type GlobalFetch = { fetch?: FetchFn }
+const _fetch = (...args: Parameters<typeof fetch>): ReturnType<typeof fetch> => {
+  const g = globalThis as unknown as GlobalFetch
+  const fn = g.fetch ?? (globalThis as unknown as GlobalFetch).fetch
+  return (fn as FetchFn)(...args)
+}
 export interface Frame {
   id: number
   name: string

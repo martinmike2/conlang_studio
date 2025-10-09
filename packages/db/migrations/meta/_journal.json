@@ -29,13 +29,75 @@
       "when": 1759340000000,
       "tag": "0003_validation_extensions",
       "breakpoints": false
-    }
-    ,
+    },
     {
       "idx": 4,
       "version": "7",
       "when": 1759360000000,
       "tag": "0004_metrics_scaffolding",
+      "breakpoints": false
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1759400000000,
+      "tag": "0005_borrowing_contact_events",
+      "breakpoints": false
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1759420000000,
+      "tag": "0006_borrowing_loan_rulesets",
+      "breakpoints": false
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1759450000000,
+      "tag": "0007_style_policies",
+      "breakpoints": false
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1759470000000,
+      "tag": "0008_code_switch_profiles",
+      "breakpoints": false
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1759500000000,
+      "tag": "0009_loan_flags",
+      "breakpoints": false
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1759550000000,
+      "tag": "0010_variant_overlays",
+      "breakpoints": false
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1759600000000,
+      "tag": "0011_variant_overlays_created_at_index",
+      "breakpoints": false
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1759650000000,
+      "tag": "0012_variant_overlays_language_name_unique",
+      "breakpoints": false
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1759700000000,
+      "tag": "0013_auth_and_user_languages",
       "breakpoints": false
     }
   ]

@@ -113,8 +113,8 @@ function describeBinding(binding: GeneratedBinding | null, skeletonTokens: strin
 
 function RootPatternBuilderPage() {
   const { data, isLoading, error, refetch, isFetching } = useMorphologyInventory()
-  const roots = data?.roots ?? []
-  const patterns = data?.patterns ?? []
+  const roots = React.useMemo(() => data?.roots ?? [], [data?.roots])
+  const patterns = React.useMemo(() => data?.patterns ?? [], [data?.patterns])
 
   const [rootId, setRootId] = React.useState<string>('')
   const [patternId, setPatternId] = React.useState<string>('')

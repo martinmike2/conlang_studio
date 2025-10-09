@@ -1,0 +1,39 @@
+{
+  "mcpServers": {
+    "rag-mcp": {
+      "type": "stdio",
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/home/mmartin/mcps/rag",
+        "run",
+        "rag-mcp",
+        "serve",
+        "--config",
+        "/home/mmartin/projects/conlang_studio/rag_config.yaml"
+      ],
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      }
+    },
+    "sequential-thinking": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "env": {}
+    },
+    "serena": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena-mcp-server"
+      ],
+      "env": {}
+    }
+  }
+}

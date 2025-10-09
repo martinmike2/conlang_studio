@@ -5,12 +5,15 @@
   "description": "Shared synthetic data generation test kits",
   "scripts": {
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "e2e": "playwright test"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.2.8",
     "drizzle-orm": "^0.44.5",
     "vitest": "^3.2.4",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "@playwright/test": "^1.51.1",
+    "playwright": "^1.51.1"
   }
 }

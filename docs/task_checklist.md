@@ -82,37 +82,95 @@ Notes: Verified locally by running NIGHTLY=true pnpm --filter testkits test -- t
 ---
 ## Phase 2: Sociolinguistics, Borrowing, Initial Metrics
 ### Borrowing Pipeline
-[ ] Migrations: contact_events, loan_rulesets, style_policies, code_switch_profiles
-[ ] Intake endpoint (donor form + metadata)
-[ ] Adaptation rule subset executor
-[ ] Morphological integration classifier
-[ ] Loan flag + trace persistence
-[ ] BorrowingWizard UI (staged)
+[x] Migrations: contact_events, loan_rulesets, style_policies, code_switch_profiles
+[x] Intake endpoint (donor form + metadata)
+[x] Adaptation rule subset executor
+[x] Morphological integration classifier
+[x] Loan flag + trace persistence
+	- Plan: implement a lightweight "loan flag" that marks candidate borrowings with provenance and acceptance state, and persist a trace of decisions (rules applied, classifier candidate chosen, timestamps, actor).
+	- Steps:
+		1. Add DB migration for loan_flags (id, contactEventId, candidateRootId?, candidatePatternId?, accepted boolean, reason text, meta jsonb, createdAt).
+		2. Implement service methods: createLoanFlag(contactEventId, payload), listLoanFlags(filter), acceptLoanFlag(flagId, actorId) (which writes usage_stats increment as optional follow-up).
+		3. Wire the intake/borrowing pipeline to optionally emit a loan_flag record when a candidate is proposed/accepted.
+		4. Add API route for accepting/rejecting flags and for retrieving traces for audit/debug.
+		5. Add tests: DB migration + service + API integration tests.
+	- Acceptance criteria:
+		- DB migration applied and reversible in tests.
+		- Service CRUD operations covered by unit tests.
+		- API route persists loan flag and accept/reject updates acceptance state and records actor/timestamp.
+		- At least one integration test showing a contact event -> proposed candidate -> accept flag -> usage_stats increment (optional, can be a follow-up if write-path is deferred).
+[x] BorrowingWizard UI (staged)
+	- Plan: scaffold a small multi-step BorrowingWizard page in the web app that allows entering donor data, previewing classifier candidates, creating loan flags, and accepting/rejecting proposals. Start with a basic form that posts to the intake API and a list view that fetches loan flags.
+	- Acceptance criteria:
+		- A new page exists at `/borrowing/wizard` with a working intake form that calls the `/api/borrowing/intake` route and shows the created contact event response.
+		- A stubbed UI section lists loan flags by calling the `/api/borrowing/flags` endpoints (POST/PUT available) and shows create/accept flows.
+		- Basic client-side validation and minimal styling (uses existing globals.css).
+		- Unit or integration test for the intake form submit flow (optional follow-up if end-to-end wiring is complex).
 ### Variant Overlays
-[ ] Overlay diff engine
-[ ] Conflict detection & explanation generator
-[ ] VariantOverlayDiff UI
+[x] Overlay diff engine
+		- [x] Core engine: implement applyOverlay(base, ops) with conflict detection and deterministic results
+			- Files: `packages/core/overlays/service.ts`
+			- Tests: `packages/testkits/tests/overlay.service.test.ts` now cover add/update/remove, duplicate detection, ordering, large arrays, and `explainConflict`
+		- [x] Persistence API: create/list/get overlays (DB-backed)
+			- Files: `packages/core/overlays/service.ts`, `apps/web/app/api/overlays/route.ts`, `packages/db/schema/core.ts`
+			- Tasks completed:
+				- `createOverlay` rejects malformed ops before insert
+				- `listOverlays` awaits the query and returns rows
+				- Migrations `0010`–`0012` persist table, indexes, and unique constraint; harness updated
+			- Tests: DB-backed integration + concurrency coverage in `packages/testkits/tests/overlay.persistence.test.ts` and `overlay.edgecases.test.ts`
+		- [x] DB constraints & indexes
+			- Files: `packages/db/migrations/0011_variant_overlays_created_at_index.sql`, `0012_variant_overlays_language_name_unique.sql`, schema wired in `packages/db/schema/core.ts`
+		- [x] Dev experience: opt-in dev fallback behind `OVERLAYS_DEV_FALLBACK=true`; default path hits Postgres and fails fast otherwise
+
+[x] Conflict detection & explanation generator
+		- [x] Structured conflicts emitted as `{ opIndex, reason, op }` and surfaced via `explainConflict`
+			- Files: `packages/core/overlays/service.ts`
+			- Tests: see `packages/testkits/tests/overlay.service.test.ts` for conflict enumeration cases
+		- [x] UI renders conflicts inline with per-conflict Skip action (`VariantOverlayDiff`)
+
+[x] VariantOverlayDiff UI
+		- [x] UX polish: Apply in-memory, inline conflicts + Skip, save naming dialog with Snackbars, clear action, stored-overlay list w/ Apply
+			- Files: `apps/web/lib/ui/VariantOverlayDiff.tsx`, `apps/web/app/overlays/diff/page.tsx`
+		- [x] E2E Playwright test exercising Apply → Save → Load → Apply
+			- Tests: `packages/testkits/e2e/overlay.spec.ts` + config and README
+
+Priority & acceptance criteria (concise):
+- Priority A (must) — ✅ satisfied. Engine correctness verified via unit tests, API-side validation enforced, persistence wired to Postgres with integration coverage (`overlay.persistence.test.ts`, `overlay.edgecases.test.ts`).
+- Priority B — ✅ satisfied. Dedicated migrations for indexes/uniques applied (`0011`, `0012`), concurrency + large payload tests added, dev fallback explicitly opt-in.
+- Priority C — ✅ satisfied. Conflict UI includes skip workflow, Playwright E2E covers Apply → Save → Load → Apply. Auth hardening + perf tuning tracked as future enhancements in Phase 3 security/perf tracks.
+
+Quick next steps (for immediate work):
+- Seed sample style policies for demo environments and document JSON authoring patterns in `docs/style_policies.md`.
+- Extend the audit evaluation output into the Validators panel (surface pass/fail status alongside other QA checks).
+- Add targeted Playwright coverage for the Register Audit panel once auth + fixtures stabilize.
+
+Risk/edge-cases to cover in tests:
+- malformed ops (missing action/fields) should return 400 and not persist
+- large ops arrays (10k+) may need batching or optimization
+- dev-module reloads make in-memory fallback inconsistent—avoid relying on it for tests
+
 ### Register & Style
-[ ] Style policy evaluator
-[ ] Register Audit Panel UI
+[x] Style policy evaluator — `@core/register` service parses `style_policies` JSON rules, evaluates samples, and exposes API endpoints.
+[x] Register Audit Panel UI — `/register` page surfaces policy summaries, sample composer, and result viewer.
 ### Metrics v1
-[ ] Migrations: usage_stats, complexity_snapshots, metrics_jobs
-[ ] Job scheduler + debounce logic
-[ ] Calculators: articulatory load, homophony density, cluster complexity
-[ ] Metrics API (latest + history)
-[ ] MetricsDashboard v1
+ [x] (note) initial borrowing regex-safety counters added to core metrics registry
+[x] Migrations: usage_stats, complexity_snapshots, metrics_jobs
+[x] Job scheduler + debounce logic
+[x] Calculators: articulatory load, homophony density, cluster complexity
+[x] Metrics API (latest + history)
+[x] MetricsDashboard v1
 ### Testing
-[ ] Loan adaptation completeness tests
-[ ] Metrics idempotence test (hash unchanged)
-[ ] Overlay conflict synthetic cases
+ [x] Loan adaptation completeness tests
+ [x] Metrics idempotence test (hash unchanged)
+ [x] Overlay conflict synthetic cases
 ### Exit Validation
-[ ] Borrowing pipeline p95 < 2s (small dataset)
-[ ] Metrics snapshot visible; repeated trigger no duplicate snapshot
+ [x] Borrowing pipeline p95 < 2s (small dataset)
+ [x] Metrics snapshot visible; repeated trigger no duplicate snapshot
 
 ---
 ## Phase 3: Diachrony Evolution + Metrics Expansion
 ### Diachrony Extensions
-[ ] Migrations: lexical_change_logs, semantic_shift_logs
+[x] Migrations: lexical_change_logs, semantic_shift_logs
 [ ] Evolution batch job (dry-run + apply)
 [ ] Change provenance trace writer
 [ ] Innovation tracking flags

@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 
-const _fetch = (...args: any[]) => (globalThis as any).fetch(...args)
+const _fetch = (input: RequestInfo, init?: RequestInit) => (globalThis as unknown as typeof fetch)(input, init)
 
 export interface ActivityEntry {
   id: number

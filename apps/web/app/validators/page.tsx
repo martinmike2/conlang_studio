@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react"
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
-import CardActions from '@mui/material/CardActions'
 import Typography from '@mui/material/Typography'
 import Collapse from '@mui/material/Collapse'
 import IconButton from '@mui/material/IconButton'
@@ -11,7 +10,13 @@ import Chip from '@mui/material/Chip'
 import Box from '@mui/material/Box'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
-type ValidatorResult = any
+type ValidatorResult = {
+  id: string
+  name?: string
+  status?: 'pass' | 'fail' | string
+  summary?: string
+  error?: { message?: string; stack?: string }
+}
 
 export default function ValidatorsPage() {
   const [results, setResults] = useState<ValidatorResult[] | null>(null)
@@ -31,8 +36,9 @@ export default function ValidatorsPage() {
         const text = await res.text()
         setResults([{ id: 'error', name: 'Failed to load', status: 'fail', summary: text }])
       }
-    } catch (e: any) {
-      setResults([{ id: 'error', name: 'Fetch error', status: 'fail', summary: e?.message ?? String(e) }])
+    } catch (e: unknown) {
+      const msg = (e instanceof Error) ? e.message : String(e)
+      setResults([{ id: 'error', name: 'Fetch error', status: 'fail', summary: msg }])
     } finally {
       setLoading(false)
     }
@@ -59,7 +65,7 @@ export default function ValidatorsPage() {
 
       {results && (
         <Box sx={{ display: 'grid', gap: 2 }}>
-          {results.map((r: any) => (
+          {results.map((r: ValidatorResult) => (
             <Card key={r.id} variant="outlined">
               <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 2 }}>
                 <Box>

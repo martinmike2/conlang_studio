@@ -32,6 +32,10 @@ DB_NAME=conlang_studio
 - `GET` list frames
 - `POST` create new frame (body: `{ "name": "Motion" }`)
 
+## Register & Style Audit
+- UI: visit `/register` in the web app to explore style policies, compose sample phrases, and review violations.
+- API: `GET /api/register/policies` returns the stored `style_policies` rows; `POST /api/register/audit` evaluates samples against a policy. See `docs/style_policies.md` for the JSON rule schema.
+
 ## Next Steps
 - Add PATCH/DELETE for frames
 - Introduce input validation (zod)

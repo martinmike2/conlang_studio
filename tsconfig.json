@@ -11,7 +11,8 @@
     "types": ["node"],
     "baseUrl": "./",
     "paths": {
-      "@core/*": ["packages/core/*"]
+      "@core/*": ["packages/core/*"],
+      "@db/*": ["packages/db/*"]
     }
   }
 }

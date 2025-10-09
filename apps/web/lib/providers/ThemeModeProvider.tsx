@@ -39,14 +39,10 @@ function usePersistedMode(): [PaletteMode, SetMode] {
     if (stored) setMode(stored)
   }, [])
   const setPersisted = React.useCallback((val: React.SetStateAction<PaletteMode>) => {
-    setMode(prev => {
-      let next: PaletteMode
-      if (typeof val === 'function') {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        next = (val as any)(prev)
-      } else {
-        next = val
-      }
+    setMode((prev: PaletteMode) => {
+  // Use a short, explicit any-cast here to call a possible updater function. It's guarded by typeof check.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const next = typeof val === 'function' ? (val as any)(prev) as PaletteMode : val
       try {
         const ls: Storage | undefined = typeof globalThis !== 'undefined' && typeof (globalThis as { localStorage?: Storage }).localStorage !== 'undefined'
           ? (globalThis as { localStorage?: Storage }).localStorage
@@ -64,7 +60,7 @@ export function ThemeModeProvider({ children }: { children: React.ReactNode }) {
   const theme = React.useMemo(() => buildTheme(mode), [mode])
   const value = React.useMemo<ThemeModeContextValue>(() => ({
     mode,
-    toggle: () => setMode(m => (m === 'dark' ? 'light' : 'dark'))
+    toggle: () => setMode((_m) => (_m === 'dark' ? 'light' : 'dark'))
   }), [mode, setMode])
 
   return (

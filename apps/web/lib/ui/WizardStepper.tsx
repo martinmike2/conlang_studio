@@ -13,7 +13,7 @@ export function WizardStepper({ steps, initial = 0, onFinish }: WizardStepperPro
 
   const next = () => {
     if (active < steps.length - 1) setActive(a => a + 1)
-    else onFinish && onFinish()
+    else if (onFinish) onFinish()
   }
 
   const back = () => setActive(a => Math.max(0, a - 1))

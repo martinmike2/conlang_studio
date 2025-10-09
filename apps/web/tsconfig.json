@@ -27,6 +27,7 @@
     "lib/**/*.ts",
     "lib/**/*.tsx",
     "tests/**/*.ts",
+    "types/**/*.d.ts",
     "vitest.config.ts",
     ".next/types/**/*.ts"
   ],

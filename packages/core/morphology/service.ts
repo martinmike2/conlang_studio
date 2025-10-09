@@ -1,6 +1,6 @@
 import { eq, type InferInsertModel } from "drizzle-orm"
 import { getDb } from "../../db/client"
-import { patterns, roots } from "../../db/schema/core"
+import { patterns, roots, usageStats } from "../../db/schema/core"
 import type { PatternRecord, RootRecord } from "./types"
 import { emitMorphologyEvent, type MorphologyEntity, type MorphologyEventAction, type MorphologyEventPayloadMap } from "./events"
 import { recordActivity } from "@core/activity"
@@ -31,6 +31,19 @@ export interface MorphologyService {
   createRoot(input: CreateRootInput): Promise<RootRecord>
   updateRoot(id: number, patch: UpdateRootInput): Promise<RootRecord | null>
   deleteRoot(id: number): Promise<boolean>
+
+  /**
+   * Attempt to classify a surface form for morphological integration.
+   * Returns candidate matches with metadata ordered by score.
+   */
+  classifyIntegration(surface: string): Promise<Array<{
+    rootId?: number
+    patternId?: number
+    score: number
+    rootNormalized?: string
+    patternSkeleton?: string
+    normalizedSurface?: string
+  }>>
 
   listPatterns(): Promise<PatternRecord[]>
   getPatternById(id: number): Promise<PatternRecord | null>
@@ -209,6 +222,114 @@ export function createMorphologyService(db: DbClient = getDb()): MorphologyServi
       emitMorphologyEvent({ entity: "pattern", action: "deleted", data: deleted })
       await logMorphologyActivity("pattern", "deleted", deleted, db)
       return true
+    }
+
+    ,
+
+    async classifyIntegration(surface: string) {
+      const allRoots = await db.select().from(roots).orderBy(roots.createdAt)
+      const allPatterns = await db.select().from(patterns).orderBy(patterns.createdAt)
+
+      const candidates: Array<{ rootId?: number; patternId?: number; score: number; rootNormalized?: string; patternSkeleton?: string; normalizedSurface?: string }> = []
+
+      // Normalization helpers
+      const norm = (s: string) => s.normalize('NFKD').replace(/\p{Diacritic}/gu, '').toLowerCase()
+      const lettersOnly = (s: string) => norm(s).replace(/[^a-z]/g, '')
+      const cvSkeleton = (s: string) => {
+        const v = 'aeiou'
+        return lettersOnly(s).split('').map((ch) => (v.includes(ch) ? 'V' : 'C')).join('')
+      }
+
+      const nSurf = norm(surface)
+      const lettersSurf = lettersOnly(surface)
+      const cvSurf = cvSkeleton(surface)
+
+  // Roots: match by consonant skeleton and substring; score by consonant-match length + substring bonus
+      for (const r of allRoots) {
+        const repRaw = r.representation ?? ''
+        const rep = norm(repRaw)
+        const repLetters = lettersOnly(repRaw)
+        const repCv = cvSkeleton(repRaw)
+        if (!rep) continue
+
+        let score = 0
+  if (lettersSurf.includes(repLetters) && repLetters.length > 0) score += repLetters.length * 3
+  // consonant-only matching (e.g., ktb -> kitab)
+  const consSurf = lettersSurf.replace(/[aeiou]/g, '')
+  const repCons = repLetters.replace(/[aeiou]/g, '')
+  if (repCons && (consSurf.includes(repCons) || repCons.includes(consSurf))) score += repCons.length * 4
+        if (nSurf.includes(rep)) score += 10
+        if (cvSurf.includes(repCv) || repCv.includes(cvSurf)) score += Math.max(0, repCv.length)
+
+        if (score > 0) {
+          candidates.push({ rootId: r.id, score, rootNormalized: rep, normalizedSurface: nSurf })
+        }
+      }
+
+      // Patterns: compute skeleton letters and compare CV skeleton; prefer patterns with similar CV structure
+      for (const p of allPatterns) {
+        const skeletonRaw = p.skeleton ?? ''
+        const skeletonLetters = skeletonRaw.replace(/[^A-Za-z]/g, '')
+        const patternCv = skeletonRaw.replace(/C/g, 'C').replace(/V/g, 'V').replace(/[^CV]/g, '')
+        // fallback: if patternCv is empty, derive from letters
+        const patternCvFinal = patternCv || skeletonLetters.split('').map((ch) => /[aeiou]/i.test(ch) ? 'V' : 'C').join('')
+
+        let score = 0
+        // CV skeleton similarity: longer common prefix gives more points
+        if (patternCvFinal && cvSurf) {
+          const common = (() => {
+            let i = 0
+            while (i < patternCvFinal.length && i < cvSurf.length && patternCvFinal[i] === cvSurf[i]) i++
+            return i
+          })()
+          score += common * 5
+        }
+
+        // length proximity
+        const lenDiff = Math.abs((skeletonLetters || '').length - lettersSurf.length)
+        score += Math.max(0, 50 - lenDiff)
+
+        if (score > 0) candidates.push({ patternId: p.id, score, patternSkeleton: skeletonRaw, normalizedSurface: nSurf })
+      }
+
+      // Boost candidates by usage frequency from usage_stats
+      const rootIds = candidates.map((c) => c.rootId).filter(Boolean) as number[]
+      const patternIds = candidates.map((c) => c.patternId).filter(Boolean) as number[]
+
+      if (rootIds.length || patternIds.length) {
+        // Use raw pool query to fetch frequencies for candidate ids. This avoids complicated
+        // typed Drizzle predicates and works across pg/pglite adapters in tests.
+        try {
+          const { getPool } = await import('../../db/client')
+          const pool = getPool()
+          const rootsParam = rootIds.length ? rootIds : null
+          const patternsParam = patternIds.length ? patternIds : null
+
+          const sql = `SELECT target_kind, target_id, freq FROM usage_stats WHERE
+            (target_kind = 'root' AND ($1::int[] IS NULL OR target_id = ANY($1)))
+            OR (target_kind = 'pattern' AND ($2::int[] IS NULL OR target_id = ANY($2)))`
+
+          const res = await pool.query(sql, [rootsParam, patternsParam])
+          const freqMap = new Map<string, number>()
+          for (const row of res.rows) {
+            const key = `${row.target_kind}:${row.target_id}`
+            freqMap.set(key, Number(row.freq) || 0)
+          }
+
+          for (const c of candidates) {
+            const key = c.rootId ? `root:${c.rootId}` : c.patternId ? `pattern:${c.patternId}` : undefined
+            if (key && freqMap.has(key)) {
+              const f = freqMap.get(key) || 0
+              c.score += Math.log(1 + f) * 10
+            }
+          }
+        } catch (e) {
+          // If metrics table isn't present or query fails in certain adapters, ignore gracefully
+        }
+      }
+
+      candidates.sort((a, b) => b.score - a.score)
+      return candidates.slice(0, 10)
     }
   }
 

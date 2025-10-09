@@ -1,8 +1,14 @@
 "use client"
 import { useQuery } from '@tanstack/react-query'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const _fetch = (...args: any[]) => (globalThis as any).fetch(...args)
+// Use DOM fetch types where available; avoid casting to `any` by defining a minimal fetch shape.
+type FetchFn = typeof fetch
+type GlobalFetch = { fetch?: FetchFn }
+const _fetch = (...args: Parameters<typeof fetch>): ReturnType<typeof fetch> => {
+  const g = globalThis as unknown as GlobalFetch
+  const fn = g.fetch ?? (globalThis as unknown as GlobalFetch).fetch
+  return (fn as FetchFn)(...args)
+}
 
 export interface RootOption {
   id: number
