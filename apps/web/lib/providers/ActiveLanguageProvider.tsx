@@ -36,7 +36,14 @@ function readStoredLanguage(): UserLanguage | null {
 
 export function ActiveLanguageProvider({ children }: { children: React.ReactNode }) {
   const { status } = useSession()
-  const [activeLanguage, setActiveLanguageState] = React.useState<UserLanguage | null>(() => readStoredLanguage())
+  const [activeLanguage, setActiveLanguageState] = React.useState<UserLanguage | null>(null)
+
+  // On client, hydrate from localStorage
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setActiveLanguageState(readStoredLanguage())
+    }
+  }, [])
 
   const setActiveLanguage = React.useCallback((language: UserLanguage | null) => {
     setActiveLanguageState(language)

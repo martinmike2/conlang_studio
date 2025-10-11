@@ -51,6 +51,12 @@ interface NavSection {
 
 const navSections: NavSection[] = [
   {
+    label: 'Rule Graph',
+    items: [
+      { label: 'Rule Dependency Graph', href: '/languages/rule-graph' }
+    ]
+  },
+  {
     label: 'Workspace',
     items: [{ label: 'Dashboard', href: '/dashboard' }]
   },

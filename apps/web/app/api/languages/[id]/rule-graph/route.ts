@@ -7,7 +7,8 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const languageId = parseInt(params.id, 10);
+    const { id } = await params;
+    const languageId = parseInt(id, 10);
     if (isNaN(languageId)) {
       return NextResponse.json({ error: "Invalid language ID" }, { status: 400 });
     }

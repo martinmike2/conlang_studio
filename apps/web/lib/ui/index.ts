@@ -1,3 +1,2 @@
-export { CollabProvider, createMockDoc } from './CollabProvider'
-export { CollabContext } from './CollabProvider'
-export type { CollabAPI } from './CollabProvider'
+$1
+export { default as RuleGraph } from './RuleGraph';

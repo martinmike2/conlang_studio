@@ -7,3 +7,6 @@ dist
 .DS_Store
 coverage
 **/.next
+.rag_store
+.serena
+.claude

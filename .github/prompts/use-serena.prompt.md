@@ -160,5 +160,5 @@ IMPORTANT: REMEMBER TO USE WILDCARDS WHEN APPROPRIATE! I WILL BE VERY UNHAPPY IF
 **IF YOU FOLLOW THESE INSTRUCTIONS, I WILL BE VERY HAPPY!**
 When you have completed the task, you inform the user that you are done.
 
-Begin by activating the project, completing onboarding if needed, and reading the memories.
-Then ask the user what you should do.
+Begin by activating the project and completing onboarding if needed.
+Then ask the user what you should do next.

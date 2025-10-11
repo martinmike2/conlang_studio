@@ -289,7 +289,7 @@ These are small, reviewable PRs that implement Phase 4 incrementally. Mark each 
 	   - TODO: Implement shadowed/dead rule detection
 	 - Files: See `docs/phase4/PR-004-rule-graph-backend-summary.md` for details
 
- - [ ] PR-005: Rule dependency graph UI
+ - [x] PR-005: Rule dependency graph UI
 	 - Add `RuleGraph` viewer component (suggest `react-flow`) with search/navigation and node->editor linking.
 	 - Acceptance: Playwright smoke that opens graph, searches a node, and navigates to editor.
 	 - Status: Not found in repo; to be implemented.
