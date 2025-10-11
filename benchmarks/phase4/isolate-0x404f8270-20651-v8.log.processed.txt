@@ -1,0 +1,215 @@
+Statistical profiling result from isolate-0x404f8270-20651-v8.log, (257 ticks, 103 unaccounted, 0 excluded).
+
+ [Shared libraries]:
+   ticks  total  nonlib   name
+      9    3.5%          /usr/lib/x86_64-linux-gnu/libc.so.6
+
+ [JavaScript]:
+   ticks  total  nonlib   name
+      1    0.4%    0.4%  JS: ^templateString node:internal/deps/cjs-module-lexer/lexer:1216:25
+      1    0.4%    0.4%  JS: ^get node:internal/bootstrap/node:100:8
+      1    0.4%    0.4%  JS: ^Readable.read node:internal/streams/readable:647:35
+
+ [C++]:
+   ticks  total  nonlib   name
+    111   43.2%   44.8%  epoll_pwait@@GLIBC_2.6
+     11    4.3%    4.4%  _IO_fwrite@@GLIBC_2.2.5
+     10    3.9%    4.0%  __write@@GLIBC_2.2.5
+      2    0.8%    0.8%  std::basic_ostream<char, std::char_traits<char> >& std::__ostream_insert<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*, long)@@GLIBCXX_3.4.9
+      1    0.4%    0.4%  std::ostream::sentry::sentry(std::ostream&)@@GLIBCXX_3.4
+      1    0.4%    0.4%  std::_Rb_tree_increment(std::_Rb_tree_node_base*)@@GLIBCXX_3.4
+      1    0.4%    0.4%  operator delete(void*)@@GLIBCXX_3.4
+      1    0.4%    0.4%  isprint@@GLIBC_2.2.5
+      1    0.4%    0.4%  __read@@GLIBC_2.2.5
+      1    0.4%    0.4%  __pthread_rwlock_unlock@GLIBC_2.2.5
+      1    0.4%    0.4%  __libc_free@@GLIBC_2.2.5
+      1    0.4%    0.4%  _IO_file_xsputn@@GLIBC_2.2.5
+
+ [Summary]:
+   ticks  total  nonlib   name
+      3    1.2%    1.2%  JavaScript
+    142   55.3%   57.3%  C++
+     11    4.3%    4.4%  GC
+      9    3.5%          Shared libraries
+    103   40.1%          Unaccounted
+
+ [C++ entry points]:
+   ticks    cpp   total   name
+     11   52.4%    4.3%  _IO_fwrite@@GLIBC_2.2.5
+      3   14.3%    1.2%  __write@@GLIBC_2.2.5
+      1    4.8%    0.4%  std::ostream::sentry::sentry(std::ostream&)@@GLIBCXX_3.4
+      1    4.8%    0.4%  std::basic_ostream<char, std::char_traits<char> >& std::__ostream_insert<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*, long)@@GLIBCXX_3.4.9
+      1    4.8%    0.4%  std::_Rb_tree_increment(std::_Rb_tree_node_base*)@@GLIBCXX_3.4
+      1    4.8%    0.4%  operator delete(void*)@@GLIBCXX_3.4
+      1    4.8%    0.4%  isprint@@GLIBC_2.2.5
+      1    4.8%    0.4%  __pthread_rwlock_unlock@GLIBC_2.2.5
+      1    4.8%    0.4%  _IO_file_xsputn@@GLIBC_2.2.5
+
+ [Bottom up (heavy) profile]:
+  Note: percentage shows a share of a particular caller in the total
+  amount of its parent calls.
+  Callers occupying less than 1.0% are not shown.
+
+   ticks parent  name
+    111   43.2%  epoll_pwait@@GLIBC_2.6
+
+    103   40.1%  UNKNOWN
+     39   37.9%    JS: ^compileForInternalLoader node:internal/bootstrap/realm:383:27
+     37   94.9%      JS: ^requireBuiltin node:internal/bootstrap/realm:420:24
+      5   13.5%        JS: ~<anonymous> node:crypto:1:1
+      5  100.0%          JS: ^compileForInternalLoader node:internal/bootstrap/realm:383:27
+      5  100.0%            JS: ^compileForPublicLoader node:internal/bootstrap/realm:331:25
+      4   10.8%        JS: ~<anonymous> node:internal/streams/duplex:1:1
+      4  100.0%          JS: ^compileForInternalLoader node:internal/bootstrap/realm:383:27
+      4  100.0%            JS: ^requireBuiltin node:internal/bootstrap/realm:420:24
+      3    8.1%        JS: ~<anonymous> node:tty:1:1
+      3  100.0%          JS: ^compileForInternalLoader node:internal/bootstrap/realm:383:27
+      3  100.0%            JS: ~compileForPublicLoader node:internal/bootstrap/realm:331:25
+      2    5.4%        JS: ~initCJSParseSync node:internal/modules/esm/translators:81:26
+      2  100.0%          JS: ~commonjsStrategy node:internal/modules/esm/translators:288:54
+      2  100.0%            JS: ^#translate node:internal/modules/esm/loader:489:13
+      2    5.4%        JS: ~getSource node:internal/modules/esm/load:42:25
+      2  100.0%          JS: ~defaultLoad node:internal/modules/esm/load:112:27
+      2  100.0%            JS: ~load node:internal/modules/esm/loader:718:13
+      2    5.4%        JS: ~defaultResolve node:internal/modules/esm/loader:698:17
+      2  100.0%          JS: ~#cachedDefaultResolve node:internal/modules/esm/loader:651:24
+      2  100.0%            JS: ~resolve node:internal/modules/esm/loader:635:10
+      2    5.4%        JS: ~<anonymous> node:internal/streams/operators:1:1
+      2  100.0%          JS: ^compileForInternalLoader node:internal/bootstrap/realm:383:27
+      2  100.0%            JS: ^requireBuiltin node:internal/bootstrap/realm:420:24
+      2    5.4%        JS: ~<anonymous> node:internal/fs/promises:1:1
+      2  100.0%          JS: ^compileForInternalLoader node:internal/bootstrap/realm:383:27
+      2  100.0%            JS: ^requireBuiltin node:internal/bootstrap/realm:420:24
+      2    5.4%        JS: ~<anonymous> node:internal/child_process:1:1
+      2  100.0%          JS: ^compileForInternalLoader node:internal/bootstrap/realm:383:27
+      2  100.0%            JS: ^requireBuiltin node:internal/bootstrap/realm:420:24
+      1    2.7%        JS: ~lazyLoadStreams node:fs:3080:25
+      1  100.0%          JS: ~get ReadStream node:fs:3227:17
+      1  100.0%            JS: ^getOwn node:internal/bootstrap/realm:204:16
+      1    2.7%        JS: ~get node:internal/util:615:17
+      1  100.0%          JS: ^getOwn node:internal/bootstrap/realm:204:16
+      1  100.0%            JS: ^syncExports node:internal/bootstrap/realm:371:14
+      1    2.7%        JS: ~get BlockList node:net:2444:16
+      1  100.0%          JS: ^getOwn node:internal/bootstrap/realm:204:16
+      1  100.0%            JS: ^syncExports node:internal/bootstrap/realm:371:14
+      1    2.7%        JS: ~asyncRunEntryPointWithESMLoader node:internal/modules/run_main:104:47
+      1  100.0%          JS: ~runEntryPointWithESMLoader node:internal/modules/run_main:140:36
+      1  100.0%            JS: ~executeUserEntryPoint node:internal/modules/run_main:155:31
+      1    2.7%        JS: ~<anonymous> node:worker_threads:1:1
+      1  100.0%          JS: ^compileForInternalLoader node:internal/bootstrap/realm:383:27
+      1  100.0%            JS: ^compileForPublicLoader node:internal/bootstrap/realm:331:25
+      1    2.7%        JS: ~<anonymous> node:module:1:1
+      1  100.0%          JS: ^compileForInternalLoader node:internal/bootstrap/realm:383:27
+      1  100.0%            JS: ~compileForPublicLoader node:internal/bootstrap/realm:331:25
+      1    2.7%        JS: ~<anonymous> node:internal/streams/pipeline:1:1
+      1  100.0%          JS: ^compileForInternalLoader node:internal/bootstrap/realm:383:27
+      1  100.0%            JS: ^requireBuiltin node:internal/bootstrap/realm:420:24
+      1    2.7%        JS: ~<anonymous> node:internal/modules/esm/get_format:1:1
+      1  100.0%          JS: ^compileForInternalLoader node:internal/bootstrap/realm:383:27
+      1  100.0%            JS: ^requireBuiltin node:internal/bootstrap/realm:420:24
+      1    2.7%        JS: ~<anonymous> node:internal/fs/promises:142:28
+      1  100.0%          JS: ~<anonymous> node:internal/util:801:18
+      1  100.0%            JS: ~rm node:internal/fs/promises:806:18
+      1    2.7%        JS: ~<anonymous> node:internal/crypto/pbkdf2:1:1
+      1  100.0%          JS: ^compileForInternalLoader node:internal/bootstrap/realm:383:27
+      1  100.0%            JS: ^requireBuiltin node:internal/bootstrap/realm:420:24
+      1    2.7%        JS: ~<anonymous> node:internal/crypto/hkdf:1:1
+      1  100.0%          JS: ^compileForInternalLoader node:internal/bootstrap/realm:383:27
+      1  100.0%            JS: ^requireBuiltin node:internal/bootstrap/realm:420:24
+      1    2.7%        JS: ~<anonymous> node:cluster:1:1
+      1  100.0%          JS: ^compileForInternalLoader node:internal/bootstrap/realm:383:27
+      1  100.0%            JS: ^requireBuiltin node:internal/bootstrap/realm:420:24
+      1    2.7%        JS: ~<anonymous> node:child_process:1:1
+      1  100.0%          JS: ^compileForInternalLoader node:internal/bootstrap/realm:383:27
+      1  100.0%            JS: ~compileForPublicLoader node:internal/bootstrap/realm:331:25
+      2    5.1%      JS: ~compileForPublicLoader node:internal/bootstrap/realm:331:25
+      2  100.0%        JS: ~loadBuiltinModule node:internal/modules/helpers:99:27
+      2  100.0%          JS: ~builtinStrategy node:internal/modules/esm/translators:384:52
+      2  100.0%            JS: ~#translate node:internal/modules/esm/loader:489:13
+      7    6.8%    JS: ~compileSourceTextModule node:internal/modules/esm/utils:344:33
+      7  100.0%      JS: ~moduleStrategy node:internal/modules/esm/translators:141:50
+      6   85.7%        JS: ~#translate node:internal/modules/esm/loader:489:13
+      6  100.0%          JS: ~loadAndTranslate node:internal/modules/esm/loader:542:25
+      1   14.3%        JS: ^#translate node:internal/modules/esm/loader:489:13
+      1  100.0%          JS: ^loadAndTranslate node:internal/modules/esm/loader:542:25
+      5    4.9%    JS: ~parseCJS node:internal/deps/cjs-module-lexer/lexer:40:19
+      5  100.0%      JS: ~cjsPreparseModuleExports node:internal/modules/esm/translators:315:34
+      5  100.0%        JS: ~createCJSModuleWrap node:internal/modules/esm/translators:220:29
+      5  100.0%          JS: ~commonjsStrategy node:internal/modules/esm/translators:288:54
+      5  100.0%            JS: ^#translate node:internal/modules/esm/loader:489:13
+      4    3.9%    JS: ~detectModuleFormat node:internal/modules/esm/get_format:42:28
+      4  100.0%      JS: ~getFileProtocolModuleFormat node:internal/modules/esm/get_format:117:37
+      4  100.0%        JS: ~defaultGetFormat node:internal/modules/esm/get_format:227:26
+      4  100.0%          JS: ~defaultLoad node:internal/modules/esm/load:112:27
+      3    2.9%    JS: ~wrapSafe node:internal/modules/cjs/loader:1422:18
+      3  100.0%      JS: ~Module._compile node:internal/modules/cjs/loader:1483:37
+      3  100.0%        JS: ~Module._extensions..js node:internal/modules/cjs/loader:1604:37
+      3  100.0%          JS: ~Module.load node:internal/modules/cjs/loader:1257:33
+      3  100.0%            JS: ~Module._load node:internal/modules/cjs/loader:1003:24
+      2    1.9%    JS: ^Readable.read node:internal/streams/readable:647:35
+      2  100.0%      JS: ^Socket.read node:net:772:33
+      1   50.0%        JS: ~maybeReadMore_ node:internal/streams/readable:864:24
+      1  100.0%          JS: ^processTicksAndRejections node:internal/process/task_queues:67:35
+      1   50.0%        JS: ^maybeReadMore_ node:internal/streams/readable:864:24
+      1  100.0%          JS: ^processTicksAndRejections node:internal/process/task_queues:67:35
+
+     11    4.3%  _IO_fwrite@@GLIBC_2.2.5
+      2   18.2%    JS: ~realpathSync node:fs:2652:22
+      2  100.0%      JS: ~toRealPath node:internal/modules/helpers:57:20
+      2  100.0%        JS: ~Module._findPath node:internal/modules/cjs/loader:663:28
+      2  100.0%          JS: ~resolveMainPath node:internal/modules/run_main:23:25
+      2  100.0%            JS: ~executeUserEntryPoint node:internal/modules/run_main:155:31
+      2   18.2%    JS: ~prepareExecution node:internal/process/pre_execution:97:26
+      2  100.0%      JS: ~prepareMainThreadExecution node:internal/process/pre_execution:53:36
+      2  100.0%        JS: ~<anonymous> node:internal/main/run_main_module:1:1
+      1    9.1%    JS: ~toRealPath node:internal/modules/helpers:57:20
+      1  100.0%      JS: ~Module._findPath node:internal/modules/cjs/loader:663:28
+      1  100.0%        JS: ~resolveMainPath node:internal/modules/run_main:23:25
+      1  100.0%          JS: ~executeUserEntryPoint node:internal/modules/run_main:155:31
+      1  100.0%            JS: ~<anonymous> node:internal/main/run_main_module:1:1
+      1    9.1%    JS: ~stringify node:internal/modules/esm/translators:120:19
+      1  100.0%      JS: ~moduleStrategy node:internal/modules/esm/translators:141:50
+      1  100.0%        JS: ~#translate node:internal/modules/esm/loader:489:13
+      1  100.0%          JS: ~loadAndTranslate node:internal/modules/esm/loader:542:25
+      1    9.1%    JS: ~removeListener node:events:686:28
+      1  100.0%      JS: ~asyncRunEntryPointWithESMLoader node:internal/modules/run_main:104:47
+      1    9.1%    JS: ~patchProcessObject node:internal/process/pre_execution:225:28
+      1  100.0%      JS: ~prepareExecution node:internal/process/pre_execution:97:26
+      1  100.0%        JS: ~prepareMainThreadExecution node:internal/process/pre_execution:53:36
+      1  100.0%          JS: ~<anonymous> node:internal/main/run_main_module:1:1
+      1    9.1%    JS: ~initializeESMLoader node:internal/process/pre_execution:703:29
+      1  100.0%      JS: ~setupUserModules node:internal/process/pre_execution:192:26
+      1  100.0%        JS: ~prepareExecution node:internal/process/pre_execution:97:26
+      1  100.0%          JS: ~prepareMainThreadExecution node:internal/process/pre_execution:53:36
+      1  100.0%            JS: ~<anonymous> node:internal/main/run_main_module:1:1
+      1    9.1%    JS: ~initializeCJSLoader node:internal/process/pre_execution:698:29
+      1  100.0%      JS: ~setupUserModules node:internal/process/pre_execution:192:26
+      1  100.0%        JS: ~prepareExecution node:internal/process/pre_execution:97:26
+      1  100.0%          JS: ~prepareMainThreadExecution node:internal/process/pre_execution:53:36
+      1  100.0%            JS: ~<anonymous> node:internal/main/run_main_module:1:1
+      1    9.1%    JS: ^getOwn node:internal/bootstrap/realm:204:16
+      1  100.0%      JS: ^syncExports node:internal/bootstrap/realm:371:14
+      1  100.0%        JS: ~<anonymous> node:internal/bootstrap/realm:357:15
+      1  100.0%          JS: ~getESMFacade node:internal/bootstrap/realm:347:15
+      1  100.0%            JS: ~builtinStrategy node:internal/modules/esm/translators:384:52
+
+     10    3.9%  __write@@GLIBC_2.2.5
+      1   10.0%    JS: ~processTicksAndRejections node:internal/process/task_queues:67:35
+      1   10.0%    JS: ~get href node:internal/url:925:11
+      1  100.0%      JS: ~executeUserEntryPoint node:internal/modules/run_main:155:31
+      1  100.0%        JS: ~<anonymous> node:internal/main/run_main_module:1:1
+      1   10.0%    JS: ~<instance_members_initializer> node:internal/modules/esm/loader:135:1
+      1  100.0%      JS: ~ModuleLoader node:internal/modules/esm/loader:175:14
+      1  100.0%        JS: ~createModuleLoader node:internal/modules/esm/loader:855:28
+      1  100.0%          JS: ~getOrInitializeCascadedLoader node:internal/modules/esm/loader:915:39
+      1  100.0%            JS: ~asyncRunEntryPointWithESMLoader node:internal/modules/run_main:104:47
+
+      9    3.5%  /usr/lib/x86_64-linux-gnu/libc.so.6
+      1   11.1%    JS: ~toRealPath node:internal/modules/helpers:57:20
+      1  100.0%      JS: ~Module._findPath node:internal/modules/cjs/loader:663:28
+      1  100.0%        JS: ~resolveMainPath node:internal/modules/run_main:23:25
+      1  100.0%          JS: ~executeUserEntryPoint node:internal/modules/run_main:155:31
+      1  100.0%            JS: ~<anonymous> node:internal/main/run_main_module:1:1
+      1   11.1%    JS: ~get node:internal/streams/duplex:162:8
+      1  100.0%      JS: ~onStreamRead node:internal/stream_base_commons:168:22
+

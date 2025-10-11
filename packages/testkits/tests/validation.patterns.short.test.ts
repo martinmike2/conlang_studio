@@ -35,9 +35,9 @@ describe("Smoke-Property: Pattern legality (short run)", () => {
   it("quickly checks detected slot counts for random skeletons", async () => {
     const rng = makeRng(12345)
     const cases = 12
-    for (let t = 0; t < cases; t++) {
-      const { db, dispose } = await createCoreTestDb()
-      try {
+    const { db, dispose } = await createCoreTestDb()
+    try {
+      for (let t = 0; t < cases; t++) {
         const skeleton = randomSkeleton(rng)
         const detected = (skeleton.match(/[A-Z](?:\d+)?/g) || []).length
 
@@ -46,9 +46,12 @@ describe("Smoke-Property: Pattern legality (short run)", () => {
         if (flip < 0.25) slotCount = Math.max(0, detected + 1)
         else if (flip < 0.45) slotCount = Math.max(0, detected - 1)
 
-        await db.insert(schema.patterns).values({ name: `p${t}`, skeleton, slotCount })
+  // Ensure each iteration runs against a clean set of patterns so
+  // findings from earlier iterations don't influence the current check.
+  await db.delete(schema.patterns)
+  await db.insert(schema.patterns).values({ name: `p${t}`, skeleton, slotCount })
 
-        const result = await validatePatternLegality(db as any)
+  const result = await validatePatternLegality(db as any)
         const mismatch = slotCount !== detected
 
         if (mismatch) {
@@ -56,9 +59,9 @@ describe("Smoke-Property: Pattern legality (short run)", () => {
         } else {
           expect(result.status).toBe("pass")
         }
-      } finally {
-        await dispose()
       }
+    } finally {
+      await dispose()
     }
   }, 30000)
 })

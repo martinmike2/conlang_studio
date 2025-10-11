@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, integer, jsonb, uniqueIndex, primaryKey } from "drizzle-orm/pg-core"
+import { pgTable, serial, text, timestamp, integer, jsonb, uniqueIndex, primaryKey, boolean } from "drizzle-orm/pg-core"
 
 export const languages = pgTable("languages", {
     id: serial("id").primaryKey(),
@@ -265,7 +265,7 @@ export const loanRulesets = pgTable("loan_rulesets", {
     name: text("name").notNull(),
     description: text("description"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
-    active: integer("active").default(1)
+    active: boolean("active").default(true)
 })
 
 export const loanRules = pgTable("loan_rules", {
@@ -308,4 +308,44 @@ export const variantOverlays = pgTable("variant_overlays", {
     createdAt: timestamp("created_at").defaultNow().notNull()
 }, (table) => ({
     languageNameUnique: uniqueIndex("variant_overlays_language_name_unique").on(table.languageId, table.name)
+}))
+
+// Phase 4: Collaboration tables
+export const collabSessions = pgTable("collab_sessions", {
+    id: serial("id").primaryKey(),
+    languageId: integer("language_id").references(() => languages.id, { onDelete: 'cascade' }),
+    ownerId: text("owner_id").references(() => users.id, { onDelete: 'set null' }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    lastActive: timestamp("last_active")
+})
+
+export const collabEvents = pgTable("collab_events", {
+    id: serial("id").primaryKey(),
+    sessionId: integer("session_id").notNull().references(() => collabSessions.id, { onDelete: 'cascade' }),
+    actorId: text("actor_id"),
+    clientSeq: integer("client_seq"),
+    serverSeq: integer("server_seq"),
+    payload: jsonb("payload").notNull().$type<Record<string, unknown>>().default({}),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    hash: text("hash")
+})
+
+
+// Phase 4: Rule dependency graph
+export const ruleDependencies = pgTable("rule_dependencies", {
+    id: serial("id").primaryKey(),
+    languageId: integer("language_id").notNull(),
+    ruleType: text("rule_type").notNull(),
+    ruleId: integer("rule_id").notNull(),
+    dependsOnType: text("depends_on_type").notNull(),
+    dependsOnId: integer("depends_on_id").notNull(),
+    relationType: text("relation_type").notNull(),
+    explanation: text("explanation"),
+    weight: integer("weight").default(1),
+    createdAt: timestamp("created_at").defaultNow().notNull()
+}, (table) => ({
+    uniqueDep: uniqueIndex("rule_dependencies_unique").on(table.ruleType, table.ruleId, table.dependsOnType, table.dependsOnId, table.relationType),
+    languageIdx: uniqueIndex("rule_dependencies_language_idx").on(table.languageId),
+    ruleIdx: uniqueIndex("rule_dependencies_rule_idx").on(table.ruleType, table.ruleId),
+    dependsOnIdx: uniqueIndex("rule_dependencies_depends_on_idx").on(table.dependsOnType, table.dependsOnId)
 }))

@@ -19,7 +19,11 @@ const migrationFiles = [
   resolve(__dirname, "../../../db/migrations/0009_loan_flags.sql"),
   resolve(__dirname, "../../../db/migrations/0010_variant_overlays.sql"),
   resolve(__dirname, "../../../db/migrations/0011_variant_overlays_created_at_index.sql"),
-  resolve(__dirname, "../../../db/migrations/0012_variant_overlays_language_name_unique.sql")
+  resolve(__dirname, "../../../db/migrations/0012_variant_overlays_language_name_unique.sql"),
+  resolve(__dirname, "../../../db/migrations/0013_auth_and_user_languages.sql"),
+  resolve(__dirname, "../../../db/migrations/0014_diachrony_logs.sql"),
+  resolve(__dirname, "../../../db/migrations/0015_collab_events.sql"),
+  resolve(__dirname, "../../../db/migrations/0016_rule_dependencies.sql")
 ]
 
 export async function createCoreTestDb() {

@@ -10,12 +10,12 @@ Legend: [ ] Todo | [~] In Progress | [x] Done | [!] Blocked
 [ ] Phase 2: Sociolinguistics, Borrowing, Initial Metrics
 [ ] Phase 3: Diachrony Evolution + Metrics Expansion
 [ ] Phase 4: Optimization, Collaboration, Rule Graph
-[ ] Phase 5: Security Hardening, Deterministic Replay, Benchmarks
-
----
+[x] Ambiguity metric (branching factor capture)
+[x] Morphological opacity metric
+[x] Processing load metric
 ## Phase 0: Bootstrap & Instrumentation
 ### Repo & CI
-[x] Configure linting + formatting (ESLint, Prettier)
+[x] Metrics expansion formula unit tests
 [x] Add type check pipeline
 [x] Add test runner scaffold + sample test
 [x] PR template with “Architecture Impact” section
@@ -171,44 +171,52 @@ Risk/edge-cases to cover in tests:
 ## Phase 3: Diachrony Evolution + Metrics Expansion
 ### Diachrony Extensions
 [x] Migrations: lexical_change_logs, semantic_shift_logs
-[ ] Evolution batch job (dry-run + apply)
-[ ] Change provenance trace writer
-[ ] Innovation tracking flags
-[ ] EvolutionTimeline UI
+[x] Evolution batch job (dry-run + apply)
+[x] Change provenance trace writer
+[x] Innovation tracking flags
+[x] EvolutionTimeline UI
 ### Semantic Drift
-[ ] Shift taxonomy enforcement
-[ ] Drift heatmap aggregation service
+[x] Shift taxonomy enforcement
+[x] Drift heatmap aggregation service
 ### Metrics Expansion
-[ ] Ambiguity metric (branching factor capture)
-[ ] Morphological opacity metric
-[ ] Processing load metric
-[ ] Advisory suggestions generation (optional)
+ [x] Ambiguity metric (branching factor capture)
+ [x] Morphological opacity metric
+ [x] Processing load metric
 ### Testing
-[ ] Evolution determinism (seeded RNG)
-[ ] Metrics expansion formula unit tests
-[ ] Timeline ordering tests
+[x] Evolution determinism (seeded RNG)
+[x] Metrics expansion formula unit tests
+[x] Timeline ordering tests
 ### Exit Validation
-[ ] Evolution job (100 lexemes) <5m
-[ ] Replay unchanged earlier outputs
+[~] Evolution job (100 lexemes) <5m
+[x] Replay unchanged earlier outputs
 [ ] Advisory panel visible (if enabled)
+
+Notes:
+- scripts/validate-phase3-evolution.ts added — performs a 100-lexeme dry-run timing of `executeEvolutionBatch` (dry-run mode) and fails if >5 minutes. Currently the script uses mocked lexeme fetches because `fetchAllLexemeIds`/full lexeme seeding is TODO in the diachrony service; this is why the item is marked In Progress rather than Done.
+- Nightly CI job `nightly-evolution-validation` added to `.github/workflows/ci.yml` to run the evolution validation script and to run the replay determinism test with `NIGHTLY=true`. The determinism test invocation was adjusted to call `vitest` directly to avoid package-script flag conflicts.
+- Replay determinism test: added to nightly CI and verified locally (ran `NIGHTLY=true pnpm --filter testkits exec -- vitest run tests/replay.determinism.test.ts` — PASS). The CI job will run on GitHub once changes are pushed.
 
 ---
 ## Phase 4: Optimization, Collaboration, Rule Graph
 ### Profiling & WASM
-[ ] Benchmark harness (baseline stored)
-[ ] Rewrite engine profiling run
-[ ] Hotspot decision (>=10% CPU?)
+[x] Benchmark harness (baseline stored)
+	- Harness: `scripts/benchmarks/phase4/run-benchmark.ts`
+	- Baseline artifact: `benchmarks/phase4/baseline.json` (written by the harness)
+[x] Rewrite engine profiling run
+[x] Hotspot decision (>=10% CPU?)
 [ ] WASM rewrite prototype (if justified)
 [ ] WASM pattern expansion (if justified)
 [ ] Fallback logic (capability detection)
+
+Note: full worker profiling runs were executed (1k and 5k lexemes) and processed profiles written to `benchmarks/phase4/` — see `benchmarks/phase4/isolate-*-v8.log.processed.txt` and `benchmarks/phase4/worker-regeneration-baseline.json` for artifacts.
 ### Collaboration (Y.js)
 [ ] Room ID mapping strategy
 [ ] Presence indicators (cursors/edit markers)
 [ ] Conflict resolution test (simultaneous edits)
 ### Rule Dependency Graph
-[ ] Migrations: rule_dependencies
-[ ] Insertion guard + cycle detection
-[ ] Diagnostics (cycle, shadowing, dead, unreachable)
+[x] Migrations: rule_dependencies
+[x] Insertion guard + cycle detection
+[~] Diagnostics (cycle, shadowing, dead, unreachable) — cycle detection done; shadowing/dead rule detection TODO
 [ ] RuleDependencyGraph UI
 ### Cache & Performance
 [ ] Add frame_index_cache
@@ -221,6 +229,108 @@ Risk/edge-cases to cover in tests:
 [ ] p95 rewrite latency improved ≥30% OR documented exception
 [ ] Collaboration convergence <500ms avg
 [ ] Cycle insertion blocked correctly
+
+### Phase 4 Plan (PR-sized tasks)
+These are small, reviewable PRs that implement Phase 4 incrementally. Mark each PR as [~] in progress and [x] when merged.
+
+ - [x] PR-000: Instrumentation & benchmark harness
+	 - Add reproducible harness under `scripts/benchmarks/phase4/` and baseline artifact `benchmarks/phase4/baseline.json`.
+	 - Acceptance: harness runs locally and produces baseline.json; CI job (optional) can run the harness.
+	 - Note: harness & baseline artifacts present (see `benchmarks/phase4/` and `docs/phase4/profiling_findings.md`).
+
+ - [x] PR-001: Profiling & hotspot analysis
+	 - Run harness, produce `docs/phase4/profiling_findings.md` with hotspots and decision (WASM? optimize JS?).
+	 - Acceptance: findings doc committed and engineering decision recorded.
+	 - Note: `docs/phase4/profiling_findings.md` exists and describes persistence experiments and hotspots.
+
+ - [x] PR-002: Collaboration frontend (Y.js integration)
+ 	 - Add lightweight Y.js client integration and `useCollab` hook plus `CollabProvider` component.
+ 	 - Acceptance: two-browser Playwright smoke showing basic presence/edits; unit tests for hook behavior.
+ 	 - Status: ✅ **COMPLETE** - Full Y.js integration with presence indicators and backend persistence
+ 	 - Implementation:
+ 	   - Y.js dynamic import with WebSocket provider
+ 	   - API persistence provider bridging to collab_events backend
+ 	   - PresenceIndicators component with Material-UI
+ 	   - Enhanced test page with mock and real modes
+ 	   - Unit tests: 5 tests for mock doc behavior
+ 	   - E2E tests: 2 tests (mock mode passing, real mode requires services)
+ 	   - BroadcastChannel fallback for development
+ 	 - Files: See `docs/phase4/PR-002-collab-frontend-summary.md` for details
+
+ - [x] PR-003: Collaboration backend & persistence (DB/migrations)
+	 - Add collab_events/session tables, migrations, and append-only API endpoints under `apps/web/app/api/collab/`.
+	 - Acceptance: events persisted and retrievable in order; integration tests for append/read.
+	 - Status: ✅ **COMPLETE** - Full implementation with 43 passing tests
+	 - Implementation:
+	   - DB migrations and schema (0015_collab_events.sql)
+	   - Service layer with transaction-safe server_seq generation
+	   - Zod validation schemas (collabTypes.ts)
+	   - API endpoints: sessions (POST/GET), events (POST/GET)
+	   - Comprehensive tests: 22 service tests + 21 API tests
+	   - Concurrency-safe event appending with transaction isolation
+	   - Session lifecycle management with cascade deletes
+	 - Files: See `docs/phase4/PR-003-collab-backend-summary.md` for details
+
+ - [x] PR-004: Rule dependency graph backend
+	 - Implement graph computation service returning nodes/edges JSON and a cached API.
+	 - Acceptance: unit tests for graph generation and an API endpoint returning expected structure for sample rules.
+	 - Status: ✅ **COMPLETE** - Full implementation with graph computation, caching, and comprehensive tests
+	 - Implementation:
+	   - DB migration 0016_rule_dependencies.sql with proper indexes
+	   - Schema update with ruleDependencies table
+	   - Graph computation service supporting loan_rule, style_policy_rule, variant_overlay_op
+	   - Implicit dependency computation (priority-based for loan rules)
+	   - Cycle detection, reachability analysis, diagnostics
+	   - API endpoint GET /api/languages/[id]/rule-graph with query params
+	   - In-memory cache with 5-minute TTL
+	   - Unit tests: 13 test cases covering computation, caching, diagnostics
+	   - Integration tests: 10 test cases for API validation
+	   - TODO: Add phon_rule, phonotactic_rule, syntax_rule support
+	   - TODO: Implement shadowed/dead rule detection
+	 - Files: See `docs/phase4/PR-004-rule-graph-backend-summary.md` for details
+
+ - [ ] PR-005: Rule dependency graph UI
+	 - Add `RuleGraph` viewer component (suggest `react-flow`) with search/navigation and node->editor linking.
+	 - Acceptance: Playwright smoke that opens graph, searches a node, and navigates to editor.
+	 - Status: Not found in repo; to be implemented.
+
+ - [ ] PR-006-proto: WASM prototype (conditional)
+	 - Prototype hot-path in WASM (Rust/AssemblyScript) and microbenchmarks against JS baseline.
+	 - Acceptance: demonstrable hotspot speedup and parity tests for correctness.
+	 - Status: Not found in repo; conditional on profiling decision.
+
+ - [ ] PR-007: WASM integration & rollout (if PR-006 accepted)
+	 - Integrate WASM module with JS fallback and CI build steps for WASM artifact.
+	 - Acceptance: CI builds include WASM, tests pass, and performance benchmark shows improvement.
+	 - Status: Not started.
+
+ - [~] PR-008: CI & optional benchmark job
+	 - Add optional `phase4:bench` CI job to run harness and upload artifacts to CI artifacts.
+	 - Acceptance: job runs manually and uploads artifacts; does not block merges unless explicitly enabled.
+	 - Status: CI job stub referenced in docs; concrete workflow not found.
+
+ - [x/~] PR-009: Docs & runbooks (profiling findings present)
+	 - Add `docs/phase4/README.md` with run instructions, migration notes, and decision log.
+	 - Acceptance: docs added and linked from `docs/task_checklist.md`.
+	 - Note: `docs/phase4/profiling_findings.md` exists (profiling findings); a consolidated `docs/phase4/README.md` runbook is recommended.
+
+Use these PRs as checklist items for Phase 4 progress tracking and to satisfy the Phase Quality Gates above.
+
+### Phase 4 decision: persistence strategy
+
+- Decision: UNNEST-based bulk insert + controlled concurrency is the preferred persistence path for full regeneration runs.
+- Rationale: Profiling (1k and 5k runs) shows `paradigm.persist` dominates end-to-end time; UNNEST+concurrency produced the best throughput in local experiments versus multi-insert and COPY for the tested batch sizes.
+- Consequence: Defer WASM rewrite for compute-heavy functions unless a future profiling run shows a compute hotspot (>10% of total CPU/time). Focus next efforts on:
+	- tuning `batchSize` and `concurrency` in `packages/core/morphology/recomputeWorker.ts`;
+	- adding an optional COPY fallback for very large batches (where COPY is competitive); and
+	- implementing incremental recompute (event-driven `processInvalidation`) to avoid full rebuilds where possible.
+- Artifacts: see `benchmarks/phase4/*` (regeneration baselines, processed V8 logs) and `packages/core/morphology/recomputeWorker.ts` for UNNEST/COPY implementation.
+
+### Persistence tuning status
+
+- [x] Apply tuned defaults (UNNEST, batchSize=500, concurrency=4) to `runFullRecompute` — done.
+- [x] Add COPY fallback for very large batches (threshold=2000) — done.
+- Evidence: sweep results at `benchmarks/phase4/sweep-results.json` and a verification run wrote `benchmarks/phase4/worker-regeneration-baseline.json` (persistMs ~1269ms).
 
 ---
 ## Phase 5: Security, Replay Gate, Benchmarks
@@ -269,6 +379,7 @@ Risk/edge-cases to cover in tests:
 [ ] Skeleton loaders for list panels
 [ ] Toggle to widen activity panel
 [ ] Hotkey reference popover
+[ ] Richer Metrics Dashboard: sparklines, historical charts, tooltips, and per-metric explanations
 
 ### CI & Reliability additions
 [ ] Add CI artifact upload in the nightly workflow to persist snapshot.json + snapshot.hash for historical tracing
@@ -344,6 +455,7 @@ Risk/edge-cases to cover in tests:
 [ ] Advisory suggestions table
 [ ] Code-switch profiles UI
 [ ] Advanced reduplication/ablaut visualization
+[ ] Advisory suggestions generation (optional)
 
 ## Progress Tracking Table (Template)
 Task | Owner | Phase | Status | ETA | Risk | Notes
@@ -351,4 +463,21 @@ Task | Owner | Phase | Status | ETA | Risk | Notes
 
 ---
 End of checklist.
+
+## Developer notes: reducing Vitest CPU usage
+
+If Vitest consumes too much CPU on your machine, the `testkits` package runs Vitest with conservative defaults that limit parallelism:
+
+- `pnpm --filter testkits test` runs Vitest with `--max-workers=2 --threads=false`.
+
+To run with different settings temporarily, call Vitest directly (for example to use more workers):
+
+```bash
+# run with 4 worker processes and enable threads
+pnpm --filter testkits exec -- vitest run --max-workers=4 --threads=true
+```
+
+Or set the `TESTKIT_VITEST_FLAGS` environment variable in your shell to pass custom flags in CI or on your dev machine.
+
+If CI requires full parallelism, adjust the package script in `packages/testkits/package.json` or run Vitest without the flags there.
 

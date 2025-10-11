@@ -1,0 +1,34 @@
+{
+  "createdAt": "2025-10-09T22:02:31.711Z",
+  "options": {
+    "phonemes": 10,
+    "lexemes": 5000,
+    "patternsPerLexeme": 5,
+    "batchSize": 1000,
+    "noDb": false
+  },
+  "counts": {
+    "roots": 11000,
+    "patterns": 15,
+    "bindings": 165000
+  },
+  "timings": {
+    "fetchMs": 20,
+    "computeMs": 110,
+    "persistMs": 1561
+  },
+  "metricsSnapshot": {
+    "counters": {},
+    "histograms": {
+      "paradigm.fetch.ms": [
+        20
+      ],
+      "paradigm.compute.ms": [
+        110
+      ],
+      "paradigm.persist.ms": [
+        1561
+      ]
+    }
+  }
+}

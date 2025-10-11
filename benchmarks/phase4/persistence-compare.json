@@ -1,0 +1,260 @@
+{
+  "createdAt": "2025-10-09T22:00:26.124Z",
+  "results": [
+    {
+      "config": "copy",
+      "batchSize": 250,
+      "concurrency": 1,
+      "res": {
+        "counts": {
+          "roots": 6000,
+          "patterns": 10,
+          "bindings": 60000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 49,
+          "persistMs": 1297
+        }
+      }
+    },
+    {
+      "config": "copy",
+      "batchSize": 500,
+      "concurrency": 1,
+      "res": {
+        "counts": {
+          "roots": 6000,
+          "patterns": 10,
+          "bindings": 60000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 35,
+          "persistMs": 1203
+        }
+      }
+    },
+    {
+      "config": "copy",
+      "batchSize": 1000,
+      "concurrency": 1,
+      "res": {
+        "counts": {
+          "roots": 6000,
+          "patterns": 10,
+          "bindings": 60000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 35,
+          "persistMs": 677
+        }
+      }
+    },
+    {
+      "config": "unnest_conc4",
+      "batchSize": 250,
+      "concurrency": 4,
+      "res": {
+        "counts": {
+          "roots": 6000,
+          "patterns": 10,
+          "bindings": 60000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 37,
+          "persistMs": 689
+        }
+      }
+    },
+    {
+      "config": "unnest_conc4",
+      "batchSize": 500,
+      "concurrency": 4,
+      "res": {
+        "counts": {
+          "roots": 6000,
+          "patterns": 10,
+          "bindings": 60000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 36,
+          "persistMs": 526
+        }
+      }
+    },
+    {
+      "config": "unnest_conc4",
+      "batchSize": 1000,
+      "concurrency": 4,
+      "res": {
+        "counts": {
+          "roots": 6000,
+          "patterns": 10,
+          "bindings": 60000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 37,
+          "persistMs": 507
+        }
+      }
+    },
+    {
+      "config": "unnest_conc1",
+      "batchSize": 250,
+      "concurrency": 1,
+      "res": {
+        "counts": {
+          "roots": 6000,
+          "patterns": 10,
+          "bindings": 60000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 34,
+          "persistMs": 1230
+        }
+      }
+    },
+    {
+      "config": "unnest_conc1",
+      "batchSize": 500,
+      "concurrency": 1,
+      "res": {
+        "counts": {
+          "roots": 6000,
+          "patterns": 10,
+          "bindings": 60000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 34,
+          "persistMs": 1242
+        }
+      }
+    },
+    {
+      "config": "unnest_conc1",
+      "batchSize": 1000,
+      "concurrency": 1,
+      "res": {
+        "counts": {
+          "roots": 6000,
+          "patterns": 10,
+          "bindings": 60000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 34,
+          "persistMs": 636
+        }
+      }
+    },
+    {
+      "config": "multi",
+      "batchSize": 250,
+      "concurrency": 1,
+      "res": {
+        "counts": {
+          "roots": 6000,
+          "patterns": 10,
+          "bindings": 60000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 34,
+          "persistMs": 1316
+        }
+      }
+    },
+    {
+      "config": "multi",
+      "batchSize": 500,
+      "concurrency": 1,
+      "res": {
+        "counts": {
+          "roots": 6000,
+          "patterns": 10,
+          "bindings": 60000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 35,
+          "persistMs": 1245
+        }
+      }
+    },
+    {
+      "config": "multi",
+      "batchSize": 1000,
+      "concurrency": 1,
+      "res": {
+        "counts": {
+          "roots": 6000,
+          "patterns": 10,
+          "bindings": 60000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 33,
+          "persistMs": 898
+        }
+      }
+    },
+    {
+      "config": "drizzle",
+      "batchSize": 250,
+      "concurrency": 1,
+      "res": {
+        "counts": {
+          "roots": 6000,
+          "patterns": 10,
+          "bindings": 60000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 33,
+          "persistMs": 2471
+        }
+      }
+    },
+    {
+      "config": "drizzle",
+      "batchSize": 500,
+      "concurrency": 1,
+      "res": {
+        "counts": {
+          "roots": 6000,
+          "patterns": 10,
+          "bindings": 60000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 33,
+          "persistMs": 1812
+        }
+      }
+    },
+    {
+      "config": "drizzle",
+      "batchSize": 1000,
+      "concurrency": 1,
+      "res": {
+        "counts": {
+          "roots": 6000,
+          "patterns": 10,
+          "bindings": 60000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 36,
+          "persistMs": 1563
+        }
+      }
+    }
+  ]
+}

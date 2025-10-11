@@ -5,6 +5,9 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  schedule:
+    - cron: '0 3 * * *' # daily at 03:00 UTC
+  workflow_dispatch: {}
 
 jobs:
   build-test:
@@ -54,3 +57,32 @@ jobs:
         with:
           name: synth-sample
           path: synth-sample.json
+
+  nightly-evolution-validation:
+    name: "Nightly: Phase 3 Evolution Validation"
+    runs-on: ubuntu-latest
+    needs: build-test
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.17.1
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+      - name: Run Phase 3 evolution validation
+        run: pnpm exec tsx scripts/validate-phase3-evolution.ts
+        env:
+          # Ensure deterministic test behavior where required
+          NODE_ENV: test
+      - name: Replay determinism (nightly)
+        env:
+          NIGHTLY: 'true'
+        run: pnpm --filter testkits exec -- vitest run tests/replay.determinism.test.ts --max-workers=2

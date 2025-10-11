@@ -42,6 +42,26 @@ export const metrics = {
     }
     return h
   },
+  /**
+   * Start a timing span for the given metric name. Returns a function that when
+   * called will observe the elapsed milliseconds into a histogram named
+   * `${name}.ms` and also return the duration in milliseconds.
+   * Example:
+   * const stop = metrics.startSpan('paradigm.regenerate')
+   * ... do work ...
+   * const ms = stop()
+   */
+  startSpan(name: string) {
+    const start = Date.now()
+    let stopped = false
+    return () => {
+      if (stopped) return 0
+      stopped = true
+      const dur = Date.now() - start
+      this.histogram(`${name}.ms`).observe(dur)
+      return dur
+    }
+  },
   snapshot() {
     return {
       counters: Object.fromEntries([...this.counters.entries()].map(([k, v]) => [k, v.value?.() ?? (v as any)._n ?? 0])),

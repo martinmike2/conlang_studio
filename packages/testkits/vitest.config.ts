@@ -2,12 +2,15 @@ import { defineConfig } from "vitest/config"
 import { resolve } from "node:path"
 
 const coreDir = resolve(__dirname, "../core")
+const dbDir = resolve(__dirname, "../db")
 
 export default defineConfig({
   resolve: {
     alias: [
       { find: "@core", replacement: coreDir },
-      { find: "@core/", replacement: `${coreDir}/` }
+      { find: "@core/", replacement: `${coreDir}/` },
+      { find: "@db", replacement: dbDir },
+      { find: "@db/", replacement: `${dbDir}/` }
     ]
   },
   test: {

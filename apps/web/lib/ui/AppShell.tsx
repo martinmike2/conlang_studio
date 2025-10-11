@@ -86,6 +86,12 @@ const navSections: NavSection[] = [
     ]
   },
   {
+    label: 'Diachrony',
+    items: [
+      { label: 'Evolution Timeline', href: '/diachrony/timeline' }
+    ]
+  },
+  {
     label: 'Variant & Style',
     items: [
       { label: 'Overlay Diff', href: '/overlays/diff' },

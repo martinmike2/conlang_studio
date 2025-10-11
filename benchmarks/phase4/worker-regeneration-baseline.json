@@ -1,0 +1,15 @@
+{
+  "createdAt": "2025-10-09T22:43:39.144Z",
+  "res": {
+    "counts": {
+      "roots": 11000,
+      "patterns": 15,
+      "bindings": 165000
+    },
+    "timings": {
+      "fetchMs": 0,
+      "computeMs": 110,
+      "persistMs": 1269
+    }
+  }
+}

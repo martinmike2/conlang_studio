@@ -6,7 +6,8 @@ import {
   lexemeSenses,
   metricsJobs,
   patterns,
-  rootPatternBindings
+  rootPatternBindings,
+  roots
 } from "../../db/schema/core"
 import { clusterComplexity } from "./clusterComplexity"
 import { metrics as metricsRegistry } from "./registry"
@@ -111,11 +112,87 @@ async function calculateClusterComplexityMetric(db: DbClient): Promise<number> {
   return roundMetric(clusterComplexity(clusters))
 }
 
+// --- Phase 3: Metrics Expansion ---
+// Ambiguity: percentage of senses that are part of a gloss shared by multiple senses
+async function calculateAmbiguityMetric(db: DbClient): Promise<number> {
+  const senses = await db.select({ gloss: lexemeSenses.gloss }).from(lexemeSenses)
+  if (senses.length === 0) return 0
+
+  const counts = new Map<string, number>()
+  for (const { gloss } of senses) {
+    const key = (gloss ?? "").toString().trim().toLowerCase()
+    if (!key) continue
+    counts.set(key, (counts.get(key) ?? 0) + 1)
+  }
+
+  let ambiguousSenseCount = 0
+  for (const v of counts.values()) {
+    if (v > 1) ambiguousSenseCount += v
+  }
+
+  const ambiguityRatio = ambiguousSenseCount / senses.length
+  return roundMetric(Math.min(ambiguityRatio * 100, 100))
+}
+
+// Morphological opacity: heuristically measures how often generated forms diverge from declared roots
+async function calculateMorphologicalOpacityMetric(db: DbClient): Promise<number> {
+  const rows = await db
+    .select({ generatedForm: rootPatternBindings.generatedForm, rootRep: roots.representation })
+    .from(rootPatternBindings)
+    .leftJoin(roots, eq(roots.id, rootPatternBindings.rootId))
+    .where(isNotNull(rootPatternBindings.generatedForm))
+
+  if (rows.length === 0) return 0
+
+  let opaqueCount = 0
+  let total = 0
+  for (const { generatedForm, rootRep } of rows) {
+    if (!generatedForm) continue
+    total++
+    const g = (generatedForm ?? "").toString().replace(/[^\p{L}]/gu, "").toLowerCase()
+    const r = (rootRep ?? "").toString().replace(/[^\p{L}]/gu, "").toLowerCase()
+    if (!r) {
+      if (g.length > 3) opaqueCount++
+      continue
+    }
+    const maxPrefix = Math.min(g.length, r.length)
+    let prefix = 0
+    for (let i = 0; i < maxPrefix; i++) {
+      if (g[i] === r[i]) prefix++
+      else break
+    }
+    const prefixRatio = maxPrefix === 0 ? 0 : prefix / maxPrefix
+    if (prefixRatio < 0.5 || Math.abs(g.length - r.length) / Math.max(1, r.length) > 0.4) {
+      opaqueCount++
+    }
+  }
+
+  if (total === 0) return 0
+  const opacity = opaqueCount / total
+  return roundMetric(Math.min(opacity * 100, 100))
+}
+
+// Processing load: combines articulatory load and cluster complexity to estimate processing demand
+async function calculateProcessingLoadMetric(db: DbClient): Promise<number> {
+  const [articulatory, clusterScore] = await Promise.all([
+    calculateArticulatoryLoad(db),
+    calculateClusterComplexityMetric(db)
+  ])
+
+  const aNorm = Math.min(1, articulatory / 100)
+  const cNorm = Math.min(1, clusterScore / 100)
+  const load = aNorm * 0.45 + cNorm * 0.55
+  return roundMetric(Math.min(load * 100, 100))
+}
+
 export async function computeMetrics(languageId: number = DEFAULT_LANGUAGE_ID, db: DbClient = getDb()): Promise<MetricsMap> {
-  const [articulatoryLoad, homophonyDensity, clusterScore] = await Promise.all([
+  const [articulatoryLoad, homophonyDensity, clusterScore, ambiguity, opacity, processingLoad] = await Promise.all([
     calculateArticulatoryLoad(db),
     calculateHomophonyDensity(db),
-    calculateClusterComplexityMetric(db)
+    calculateClusterComplexityMetric(db),
+    calculateAmbiguityMetric(db),
+    calculateMorphologicalOpacityMetric(db),
+    calculateProcessingLoadMetric(db)
   ])
 
   const counterSnapshot = metricsRegistry.snapshot().counters ?? {}
@@ -124,6 +201,9 @@ export async function computeMetrics(languageId: number = DEFAULT_LANGUAGE_ID, d
     articulatoryLoad,
     homophonyDensity,
     clusterComplexity: clusterScore,
+    ambiguity,
+    morphologicalOpacity: opacity,
+    processingLoad,
     borrowingInvalidPatternCount: counterSnapshot['borrowing.invalid_pattern'] ?? 0,
     borrowingRegexWorkerTimeouts: counterSnapshot['borrowing.regex_worker_timeout'] ?? 0,
     borrowingRegexWorkerErrors: counterSnapshot['borrowing.regex_worker_error'] ?? 0,

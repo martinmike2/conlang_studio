@@ -5,7 +5,8 @@ import type { UserLanguage } from '../types/language'
 
 interface ActiveLanguageContextValue {
   activeLanguage: UserLanguage | null
-  setActiveLanguage: (language: UserLanguage | null) => void
+  // eslint-disable-next-line no-unused-vars
+  setActiveLanguage: (lang: UserLanguage | null) => void
 }
 
 const ActiveLanguageContext = React.createContext<ActiveLanguageContextValue | undefined>(undefined)

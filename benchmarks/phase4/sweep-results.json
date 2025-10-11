@@ -1,0 +1,869 @@
+{
+  "createdAt": "2025-10-09T22:37:07.970Z",
+  "results": [
+    {
+      "label": "unnest-batch100-c1",
+      "method": "unnest",
+      "batchSize": 100,
+      "concurrency": 1,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 108,
+          "persistMs": 8402
+        }
+      }
+    },
+    {
+      "label": "unnest-batch100-c2",
+      "method": "unnest",
+      "batchSize": 100,
+      "concurrency": 2,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 91,
+          "persistMs": 8315
+        }
+      }
+    },
+    {
+      "label": "unnest-batch100-c4",
+      "method": "unnest",
+      "batchSize": 100,
+      "concurrency": 4,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 97,
+          "persistMs": 4209
+        }
+      }
+    },
+    {
+      "label": "unnest-batch100-c8",
+      "method": "unnest",
+      "batchSize": 100,
+      "concurrency": 8,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 92,
+          "persistMs": 2157
+        }
+      }
+    },
+    {
+      "label": "unnest-batch250-c1",
+      "method": "unnest",
+      "batchSize": 250,
+      "concurrency": 1,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 92,
+          "persistMs": 3526
+        }
+      }
+    },
+    {
+      "label": "unnest-batch250-c2",
+      "method": "unnest",
+      "batchSize": 250,
+      "concurrency": 2,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 93,
+          "persistMs": 3360
+        }
+      }
+    },
+    {
+      "label": "unnest-batch250-c4",
+      "method": "unnest",
+      "batchSize": 250,
+      "concurrency": 4,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 94,
+          "persistMs": 1807
+        }
+      }
+    },
+    {
+      "label": "unnest-batch250-c8",
+      "method": "unnest",
+      "batchSize": 250,
+      "concurrency": 8,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 94,
+          "persistMs": 1498
+        }
+      }
+    },
+    {
+      "label": "unnest-batch500-c1",
+      "method": "unnest",
+      "batchSize": 500,
+      "concurrency": 1,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 92,
+          "persistMs": 3529
+        }
+      }
+    },
+    {
+      "label": "unnest-batch500-c2",
+      "method": "unnest",
+      "batchSize": 500,
+      "concurrency": 2,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 98,
+          "persistMs": 1781
+        }
+      }
+    },
+    {
+      "label": "unnest-batch500-c4",
+      "method": "unnest",
+      "batchSize": 500,
+      "concurrency": 4,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 95,
+          "persistMs": 1440
+        }
+      }
+    },
+    {
+      "label": "unnest-batch500-c8",
+      "method": "unnest",
+      "batchSize": 500,
+      "concurrency": 8,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 94,
+          "persistMs": 1449
+        }
+      }
+    },
+    {
+      "label": "unnest-batch1000-c1",
+      "method": "unnest",
+      "batchSize": 1000,
+      "concurrency": 1,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 95,
+          "persistMs": 1964
+        }
+      }
+    },
+    {
+      "label": "unnest-batch1000-c2",
+      "method": "unnest",
+      "batchSize": 1000,
+      "concurrency": 2,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 96,
+          "persistMs": 1530
+        }
+      }
+    },
+    {
+      "label": "unnest-batch1000-c4",
+      "method": "unnest",
+      "batchSize": 1000,
+      "concurrency": 4,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 96,
+          "persistMs": 1376
+        }
+      }
+    },
+    {
+      "label": "unnest-batch1000-c8",
+      "method": "unnest",
+      "batchSize": 1000,
+      "concurrency": 8,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 95,
+          "persistMs": 1416
+        }
+      }
+    },
+    {
+      "label": "multiInsert-batch100-c1",
+      "method": "multiInsert",
+      "batchSize": 100,
+      "concurrency": 1,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 96,
+          "persistMs": 8548
+        }
+      }
+    },
+    {
+      "label": "multiInsert-batch100-c2",
+      "method": "multiInsert",
+      "batchSize": 100,
+      "concurrency": 2,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 94,
+          "persistMs": 9629
+        }
+      }
+    },
+    {
+      "label": "multiInsert-batch100-c4",
+      "method": "multiInsert",
+      "batchSize": 100,
+      "concurrency": 4,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 94,
+          "persistMs": 4285
+        }
+      }
+    },
+    {
+      "label": "multiInsert-batch100-c8",
+      "method": "multiInsert",
+      "batchSize": 100,
+      "concurrency": 8,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 92,
+          "persistMs": 2224
+        }
+      }
+    },
+    {
+      "label": "multiInsert-batch250-c1",
+      "method": "multiInsert",
+      "batchSize": 250,
+      "concurrency": 1,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 93,
+          "persistMs": 3551
+        }
+      }
+    },
+    {
+      "label": "multiInsert-batch250-c2",
+      "method": "multiInsert",
+      "batchSize": 250,
+      "concurrency": 2,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 94,
+          "persistMs": 3385
+        }
+      }
+    },
+    {
+      "label": "multiInsert-batch250-c4",
+      "method": "multiInsert",
+      "batchSize": 250,
+      "concurrency": 4,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 93,
+          "persistMs": 1857
+        }
+      }
+    },
+    {
+      "label": "multiInsert-batch250-c8",
+      "method": "multiInsert",
+      "batchSize": 250,
+      "concurrency": 8,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 95,
+          "persistMs": 1658
+        }
+      }
+    },
+    {
+      "label": "multiInsert-batch500-c1",
+      "method": "multiInsert",
+      "batchSize": 500,
+      "concurrency": 1,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 95,
+          "persistMs": 3409
+        }
+      }
+    },
+    {
+      "label": "multiInsert-batch500-c2",
+      "method": "multiInsert",
+      "batchSize": 500,
+      "concurrency": 2,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 93,
+          "persistMs": 1725
+        }
+      }
+    },
+    {
+      "label": "multiInsert-batch500-c4",
+      "method": "multiInsert",
+      "batchSize": 500,
+      "concurrency": 4,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 94,
+          "persistMs": 1689
+        }
+      }
+    },
+    {
+      "label": "multiInsert-batch500-c8",
+      "method": "multiInsert",
+      "batchSize": 500,
+      "concurrency": 8,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 95,
+          "persistMs": 1561
+        }
+      }
+    },
+    {
+      "label": "multiInsert-batch1000-c1",
+      "method": "multiInsert",
+      "batchSize": 1000,
+      "concurrency": 1,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 92,
+          "persistMs": 2551
+        }
+      }
+    },
+    {
+      "label": "multiInsert-batch1000-c2",
+      "method": "multiInsert",
+      "batchSize": 1000,
+      "concurrency": 2,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 92,
+          "persistMs": 1669
+        }
+      }
+    },
+    {
+      "label": "multiInsert-batch1000-c4",
+      "method": "multiInsert",
+      "batchSize": 1000,
+      "concurrency": 4,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 98,
+          "persistMs": 1542
+        }
+      }
+    },
+    {
+      "label": "multiInsert-batch1000-c8",
+      "method": "multiInsert",
+      "batchSize": 1000,
+      "concurrency": 8,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 95,
+          "persistMs": 1569
+        }
+      }
+    },
+    {
+      "label": "copy-batch100-c1",
+      "method": "copy",
+      "batchSize": 100,
+      "concurrency": 1,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 96,
+          "persistMs": 8522
+        }
+      }
+    },
+    {
+      "label": "copy-batch100-c2",
+      "method": "copy",
+      "batchSize": 100,
+      "concurrency": 2,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 94,
+          "persistMs": 8403
+        }
+      }
+    },
+    {
+      "label": "copy-batch100-c4",
+      "method": "copy",
+      "batchSize": 100,
+      "concurrency": 4,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 117,
+          "persistMs": 4205
+        }
+      }
+    },
+    {
+      "label": "copy-batch100-c8",
+      "method": "copy",
+      "batchSize": 100,
+      "concurrency": 8,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 95,
+          "persistMs": 2140
+        }
+      }
+    },
+    {
+      "label": "copy-batch250-c1",
+      "method": "copy",
+      "batchSize": 250,
+      "concurrency": 1,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 95,
+          "persistMs": 4608
+        }
+      }
+    },
+    {
+      "label": "copy-batch250-c2",
+      "method": "copy",
+      "batchSize": 250,
+      "concurrency": 2,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 95,
+          "persistMs": 3383
+        }
+      }
+    },
+    {
+      "label": "copy-batch250-c4",
+      "method": "copy",
+      "batchSize": 250,
+      "concurrency": 4,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 92,
+          "persistMs": 1785
+        }
+      }
+    },
+    {
+      "label": "copy-batch250-c8",
+      "method": "copy",
+      "batchSize": 250,
+      "concurrency": 8,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 97,
+          "persistMs": 1467
+        }
+      }
+    },
+    {
+      "label": "copy-batch500-c1",
+      "method": "copy",
+      "batchSize": 500,
+      "concurrency": 1,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 95,
+          "persistMs": 3398
+        }
+      }
+    },
+    {
+      "label": "copy-batch500-c2",
+      "method": "copy",
+      "batchSize": 500,
+      "concurrency": 2,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 94,
+          "persistMs": 1754
+        }
+      }
+    },
+    {
+      "label": "copy-batch500-c4",
+      "method": "copy",
+      "batchSize": 500,
+      "concurrency": 4,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 93,
+          "persistMs": 1500
+        }
+      }
+    },
+    {
+      "label": "copy-batch500-c8",
+      "method": "copy",
+      "batchSize": 500,
+      "concurrency": 8,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 95,
+          "persistMs": 1336
+        }
+      }
+    },
+    {
+      "label": "copy-batch1000-c1",
+      "method": "copy",
+      "batchSize": 1000,
+      "concurrency": 1,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 96,
+          "persistMs": 2484
+        }
+      }
+    },
+    {
+      "label": "copy-batch1000-c2",
+      "method": "copy",
+      "batchSize": 1000,
+      "concurrency": 2,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 96,
+          "persistMs": 1599
+        }
+      }
+    },
+    {
+      "label": "copy-batch1000-c4",
+      "method": "copy",
+      "batchSize": 1000,
+      "concurrency": 4,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 93,
+          "persistMs": 1449
+        }
+      }
+    },
+    {
+      "label": "copy-batch1000-c8",
+      "method": "copy",
+      "batchSize": 1000,
+      "concurrency": 8,
+      "res": {
+        "counts": {
+          "roots": 11000,
+          "patterns": 15,
+          "bindings": 165000
+        },
+        "timings": {
+          "fetchMs": 0,
+          "computeMs": 93,
+          "persistMs": 1425
+        }
+      }
+    }
+  ]
+}
