@@ -8,13 +8,11 @@ on:
   schedule:
     - cron: '0 3 * * *' # daily at 03:00 UTC
   workflow_dispatch: {}
-
-$1
+jobs:
   phase4-bench:
     name: "Phase 4: Optional Benchmark Harness"
     runs-on: ubuntu-latest
-    needs: build-test
-    if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -36,11 +34,10 @@ $1
         with:
           name: phase4-baseline
           path: benchmarks/phase4/baseline.json
-$2
+  nightly-evolution-validation:
     name: "Nightly: Phase 3 Evolution Validation"
     runs-on: ubuntu-latest
-    needs: build-test
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
