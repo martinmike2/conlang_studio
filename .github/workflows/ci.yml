@@ -12,7 +12,7 @@ jobs:
   phase4-bench:
     name: "Phase 4: Optional Benchmark Harness"
     runs-on: ubuntu-latest
-        if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -37,7 +37,7 @@ jobs:
   nightly-evolution-validation:
     name: "Nightly: Phase 3 Evolution Validation"
     runs-on: ubuntu-latest
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
