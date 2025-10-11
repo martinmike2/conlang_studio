@@ -9,23 +9,12 @@ on:
     - cron: '0 3 * * *' # daily at 03:00 UTC
   workflow_dispatch: {}
 
-jobs:
-  build-test:
+$1
+  phase4-bench:
+    name: "Phase 4: Optional Benchmark Harness"
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: app
-          POSTGRES_PASSWORD: dev
-          POSTGRES_DB: conlang_studio
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd="pg_isready -U app -d conlang_studio"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+    needs: build-test
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,25 +29,14 @@ jobs:
           cache: 'pnpm'
       - name: Install deps
         run: pnpm install --frozen-lockfile
-      - name: Lint
-        run: pnpm lint
-      - name: Typecheck
-        run: pnpm typecheck
-      - name: Tests
-        run: pnpm test
-      - name: Migration Dry Run
-        run: pnpm exec tsx scripts/migrations-dry-run.ts
-      - name: Exit Validation
-        run: pnpm exec tsx scripts/exit-validation.ts
-      - name: Synthetic Sample
-        run: pnpm exec tsx scripts/generate-synth.ts --phonemes 3 --lexemes 2 | tee synth-sample.json
-      - name: Upload Synthetic Sample
+      - name: Run Phase 4 benchmark harness
+        run: pnpm exec tsx scripts/benchmarks/phase4/run-benchmark.ts
+      - name: Upload Phase 4 baseline
         uses: actions/upload-artifact@v4
         with:
-          name: synth-sample
-          path: synth-sample.json
-
-  nightly-evolution-validation:
+          name: phase4-baseline
+          path: benchmarks/phase4/baseline.json
+$2
     name: "Nightly: Phase 3 Evolution Validation"
     runs-on: ubuntu-latest
     needs: build-test
